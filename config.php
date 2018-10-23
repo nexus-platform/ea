@@ -30,24 +30,23 @@ class Config {
     // GENERAL SETTINGS
     // ------------------------------------------------------------------------
 	
-    //const BASE_URL      = 'http://nexusea.enaebl.com';
-    const BASE_URL      = 'http://localhost:8082/nexus/deploy/backend-sf4-api/ea';
-	const LANGUAGE      = 'english';
+    const LANGUAGE      = 'english';
     const DEBUG_MODE    = FALSE;
-
-    // ------------------------------------------------------------------------
-    // DATABASE SETTINGS
-    // ------------------------------------------------------------------------
-
-    const DB_HOST       = '127.0.0.1';
+	
+	//DEV SETTINGS
+	/*const BASE_URL      = 'http://localhost:8082/nexus/deploy/ea';
+	const DB_HOST       = '127.0.0.1';
     const DB_NAME       = 'nexus';
     const DB_USERNAME   = 'nexus';
-    const DB_PASSWORD   = 'nexus';
+    const DB_PASSWORD   = 'nexus';*/
+    
 	
-	/*const DB_HOST       = '127.0.0.1';
+	//PROD SEETTINGS
+	const BASE_URL      = 'http://nexusea.enaebl.com';
+	const DB_HOST       = '127.0.0.1';
     const DB_NAME       = 'nexusapp';
     const DB_USERNAME   = 'nexus';
-    const DB_PASSWORD   = 'Carlos123,.!';*/
+    const DB_PASSWORD   = 'Carlos123,.!';
 
     // ------------------------------------------------------------------------
     // GOOGLE CALENDAR SYNC
