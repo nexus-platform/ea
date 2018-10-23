@@ -9,7 +9,7 @@
  * @author Neuman Vong <neuman@twilio.com>
  * @minor changes for codeigniter <b3457m0d3@interr0bang.net>
  */
-class JWT
+class Jwt
 {
     /**
      * @param string      $jwt    The JWT
