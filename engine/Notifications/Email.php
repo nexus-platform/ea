@@ -153,7 +153,7 @@ class Email {
         $this->framework->load->library("email");
         $this->framework->email->initialize($this->getSmtpParams());
         $this->framework->email->set_crlf("\r\n");
-        $this->framework->email->from($company['company_email']);
+        $this->framework->email->from($company['company_email'], $company['company_name']);
         $this->framework->email->to($recipientEmail->get());
         $this->framework->email->subject($title->get());
         $this->framework->email->message($html);
@@ -245,7 +245,7 @@ class Email {
         $this->framework->load->library("email");
         $this->framework->email->initialize($this->getSmtpParams());
         $this->framework->email->set_crlf("\r\n");
-        $this->framework->email->from($company['company_email']);
+        $this->framework->email->from($company['company_email'], $company['company_name']);
         $this->framework->email->to($recipientEmail->get());
         $this->framework->email->subject($this->framework->lang->line('appointment_cancelled_title'));
         $this->framework->email->message($html);
@@ -279,7 +279,7 @@ class Email {
         $this->framework->load->library("email");
         $this->framework->email->initialize($this->getSmtpParams());
         $this->framework->email->set_crlf("\r\n");
-        $this->framework->email->from($company['company_email']);
+        $this->framework->email->from($company['company_email'], $company['company_name']);
         $this->framework->email->to($recipientEmail->get());
         $this->framework->email->subject($this->framework->lang->line('new_account_password'));
         $this->framework->email->message($html);
@@ -298,9 +298,7 @@ class Email {
     protected function _createMailer() {
         $mailer = new \PHPMailer;
 
-
         if ($this->config['protocol'] === 'smtp') {
-
 
             $mailer->SMTPDebug = 3;
             /* $mailer->Host = $this->config['smtp_host'];
