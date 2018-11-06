@@ -178,7 +178,7 @@ class Backend_api extends CI_Controller {
             $record_id = $this->db->escape($_POST['record_id']);
             $start_date = $this->db->escape($_POST['start_date']);
             $end_date = $this->db->escape(date('Y-m-d', strtotime($_POST['end_date'] . ' +1 day')));
-            
+
             $this->load->library('session');
             $ac_id = $this->session->userdata['ac']->id;
 
@@ -233,7 +233,7 @@ class Backend_api extends CI_Controller {
             $this->load->model('services_model');
             $this->load->model('customers_model');
             $this->load->model('settings_model');
-            
+
             // :: SAVE CUSTOMER CHANGES TO DATABASE
             if ($this->input->post('customer_data')) {
                 $customer = json_decode($this->input->post('customer_data'), TRUE);
@@ -735,7 +735,7 @@ class Backend_api extends CI_Controller {
             }
             $this->load->library('session');
             $service['id_assessment_center'] = $this->session->userdata['ac']->id;
-            
+
             $service_id = $this->services_model->add($service);
             $this->output
                     ->set_content_type('application/json')
@@ -1010,7 +1010,7 @@ class Backend_api extends CI_Controller {
 
             $this->load->model('providers_model');
             $key = $this->db->escape_str($this->input->post('key'));
-            
+
             $where = 'id_assessment_center = ' . $this->session->userdata['ac']->id . ' and (first_name LIKE "%' . $key . '%" OR last_name LIKE "%' . $key . '%" ' .
                     'OR email LIKE "%' . $key . '%" OR mobile_number LIKE "%' . $key . '%" ' .
                     'OR phone_number LIKE "%' . $key . '%" OR address LIKE "%' . $key . '%" ' .
@@ -1226,7 +1226,7 @@ class Backend_api extends CI_Controller {
                 }
                 $this->load->library('session');
                 $ac_id = $this->session->userdata['ac']->id;
-                
+
                 $this->db->simple_query("update `assessment_center` set `name` = '$name', `url` = '$link' where `id` = $ac_id");
             } else {
                 if ($this->input->post('type') == SETTINGS_USER) {
@@ -1377,7 +1377,7 @@ class Backend_api extends CI_Controller {
                     ->set_output(json_encode(['exceptions' => [exceptionToJavaScript($exc)]]));
         }
     }
-    
+
     public function ajax_send_invitation() {
         try {
             $this->config->load('email');
@@ -1392,6 +1392,8 @@ class Backend_api extends CI_Controller {
             $invitation['sender_name'] = $this->session->userdata['fullname'];
             $invitation['url'] = NEXUS_FRONT_URL . 'assessment-centre/' . $this->session->userdata['ac']->url . '/signup/' . $invitationToken;
             $result = $email->sendInvitation($invitation);
+
+
             if (result) {
                 $invitation['text'] = $invitation['message'];
                 $invitation['token'] = $invitationToken;

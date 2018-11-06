@@ -149,21 +149,19 @@ class Email {
 
         $html = file_get_contents(__DIR__ . '/../../application/views/emails/appointment_details.php');
         $html = $this->_replaceTemplateVariables($replaceArray, $html);
-
-        $mailer = $this->_createMailer();
-
-        $mailer->From = $company['company_email'];
-        $mailer->FromName = $company['company_name'];
-        $mailer->AddAddress($recipientEmail->get());
-        $mailer->Subject = $title->get();
-        $mailer->Body = $html;
-
-        //$mailer->addStringAttachment($icsStream->get(), 'invitation.ics');
-
-        if (!$mailer->Send()) {
-            throw new \RuntimeException('Email could not been sent. Mailer Error (Line ' . __LINE__ . '): '
-            . $mailer->ErrorInfo);
+        
+        $this->framework->load->library("email");
+        $this->framework->email->initialize($this->getSmtpParams());
+        $this->framework->email->set_crlf("\r\n");
+        $this->framework->email->from($company['company_email']);
+        $this->framework->email->to($recipientEmail->get());
+        $this->framework->email->subject($title->get());
+        $this->framework->email->message($html);
+        if (!$this->framework->email->send()) {
+            $err = $this->framework->email->print_debugger();
+            throw new \RuntimeException('Email could not been sent. Mailer Error (Line ' . __LINE__ . '): ' . $err);
         }
+        //$mailer->addStringAttachment($icsStream->get(), 'invitation.ics');
     }
 
     /**
@@ -244,18 +242,17 @@ class Email {
         $html = file_get_contents(__DIR__ . '/../../application/views/emails/delete_appointment.php');
         $html = $this->_replaceTemplateVariables($replaceArray, $html);
 
-        $mailer = $this->_createMailer();
-
-        // Send email to recipient.
-        $mailer->From = $company['company_email'];
-        $mailer->FromName = $company['company_name'];
-        $mailer->AddAddress($recipientEmail->get()); // "Name" argument crushes the phpmailer class.
-        $mailer->Subject = $this->framework->lang->line('appointment_cancelled_title');
-        $mailer->Body = $html;
-
-        if (!$mailer->Send()) {
-            throw new \RuntimeException('Email could not been sent. Mailer Error (Line ' . __LINE__ . '): '
-            . $mailer->ErrorInfo);
+        $this->framework->load->library("email");
+        $this->framework->email->initialize($this->getSmtpParams());
+        $this->framework->email->set_crlf("\r\n");
+        $this->framework->email->from($company['company_email']);
+        $this->framework->email->to($recipientEmail->get());
+        $this->framework->email->subject($this->framework->lang->line('appointment_cancelled_title'));
+        $this->framework->email->message($html);
+        
+        if (!$this->framework->email->send()) {
+            $err = $this->framework->email->print_debugger();
+            throw new \RuntimeException('Email could not been sent. Mailer Error (Line ' . __LINE__ . '): ' . $err);
         }
     }
 
@@ -279,17 +276,17 @@ class Email {
         $html = file_get_contents(__DIR__ . '/../../application/views/emails/new_password.php');
         $html = $this->_replaceTemplateVariables($replaceArray, $html);
 
-        $mailer = $this->_createMailer();
-
-        $mailer->From = $company['company_email'];
-        $mailer->FromName = $company['company_name'];
-        $mailer->AddAddress($recipientEmail->get()); // "Name" argument crushes the phpmailer class.
-        $mailer->Subject = $this->framework->lang->line('new_account_password');
-        $mailer->Body = $html;
-
-        if (!$mailer->Send()) {
-            throw new \RuntimeException('Email could not been sent. Mailer Error (Line ' . __LINE__ . '): '
-            . $mailer->ErrorInfo);
+        $this->framework->load->library("email");
+        $this->framework->email->initialize($this->getSmtpParams());
+        $this->framework->email->set_crlf("\r\n");
+        $this->framework->email->from($company['company_email']);
+        $this->framework->email->to($recipientEmail->get());
+        $this->framework->email->subject($this->framework->lang->line('new_account_password'));
+        $this->framework->email->message($html);
+        
+        if (!$this->framework->email->send()) {
+            $err = $this->framework->email->print_debugger();
+            throw new \RuntimeException('Email could not been sent. Mailer Error (Line ' . __LINE__ . '): ' . $err);
         }
     }
 
@@ -303,21 +300,26 @@ class Email {
 
 
         if ($this->config['protocol'] === 'smtp') {
-            $mailer->isSMTP();
-            $this->framework->load->model('appsettings_model');
-            $appSettings = $this->framework->appsettings_model->get_settings();
-            /*$mailer->Host = $this->config['smtp_host'];
-            $mailer->SMTPAuth = TRUE;
-            $mailer->Username = $this->config['smtp_user'];
-            $mailer->Password = $this->config['smtp_pass'];
-            $mailer->SMTPSecure = $this->config['smtp_crypto'];
-            $mailer->Port = $this->config['smtp_port'];*/
-            $mailer->Host = $appSettings['mail_host'];
-            $mailer->SMTPAuth = TRUE;
-            $mailer->Username = $appSettings['mail_username'];
-            $mailer->Password = $appSettings['mail_password'];
-            $mailer->SMTPSecure = $appSettings['mail_encryption'];
-            $mailer->Port = $appSettings['mail_port'];
+
+
+            $mailer->SMTPDebug = 3;
+            /* $mailer->Host = $this->config['smtp_host'];
+              $mailer->SMTPAuth = TRUE;
+              $mailer->Username = $this->config['smtp_user'];
+              $mailer->Password = $this->config['smtp_pass'];
+              $mailer->SMTPSecure = $this->config['smtp_crypto'];
+              $mailer->Port = $this->config['smtp_port']; */
+
+            /* $this->framework->load->model('appsettings_model');
+              $appSettings = $this->framework->appsettings_model->get_settings();
+              $mailer->Host = $appSettings['mail_host'];
+              $mailer->SMTPAuth = TRUE;
+              $mailer->SMTPKeepAlive = true;
+              $mailer->Mailer = 'smtp';
+              $mailer->Username = $appSettings['mail_username'];
+              $mailer->Password = $appSettings['mail_password'];
+              $mailer->SMTPSecure = $appSettings['mail_encryption'];
+              $mailer->Port = $appSettings['mail_port']; */
         }
 
         /* $mailer->isSMTP();
@@ -333,12 +335,28 @@ class Email {
         return $mailer;
     }
 
+    private function getSmtpParams() {
+        $this->framework->load->model('appsettings_model');
+        $appSettings = $this->framework->appsettings_model->get_settings()[0];
+        $res = [
+            'protocol' => 'smtp',
+            'smtp_host' => $appSettings['mail_host'],
+            'smtp_port' => $appSettings['mail_port'],
+            'smtp_user' => $appSettings['mail_username'],
+            'smtp_pass' => $appSettings['mail_password'],
+            'mailtype' => 'html',
+            'charset' => 'utf-8',
+            'newline' => "\r\n"
+        ];
+        return $res;
+    }
+
     public function sendInvitation($invitation) {
 
         // Prepare template replace array.
         $replaceArray = [
             '$header' => 'Hello, ' . $invitation['name'] . '.',
-            '$intro' => $invitation['sender_name'] . ' has invited you to join his/her Assessment Center on Nexus with the following message for you:',
+            '$intro' => $invitation['sender_name'] . ' has invited you to join his/her Assessment Center on Nexus with the following message:',
             '$message' => $invitation['message'],
             '$company_name' => $invitation['ac_name'],
             '$name' => $invitation['name'],
@@ -349,16 +367,16 @@ class Email {
         $html = file_get_contents(__DIR__ . '/../../application/views/emails/invitation.php');
         $html = $this->_replaceTemplateVariables($replaceArray, $html);
 
-        $mailer = $this->_createMailer();
-
-        $mailer->From = $invitation['sender_email'];
-        $mailer->FromName = $invitation['sender_name'];
-        $mailer->AddAddress($invitation['email']);
-        $mailer->Subject = 'Join my Assessment Centre on Nexus!';
-        $mailer->Body = $html;
-
-        if (!$mailer->Send()) {
-            throw new \RuntimeException('Email could not been sent. Mailer Error (Line ' . __LINE__ . '): ' . $mailer->ErrorInfo);
+        $this->framework->load->library("email");
+        $this->framework->email->initialize($this->getSmtpParams());
+        $this->framework->email->set_crlf("\r\n");
+        $this->framework->email->from($invitation['sender_email']);
+        $this->framework->email->to($invitation['email']);
+        $this->framework->email->subject('Join my Assessment Centre on Nexus!');
+        $this->framework->email->message($html);
+        if (!$this->framework->email->send()) {
+            $err = $this->framework->email->print_debugger();
+            throw new \RuntimeException('Email could not been sent. Mailer Error (Line ' . __LINE__ . '): ' . $err);
         }
         return true;
     }
