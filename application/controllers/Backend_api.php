@@ -1384,6 +1384,9 @@ class Backend_api extends CI_Controller {
             $email = new Email2($this, $this->config->config);
             $invitation = json_decode($this->input->post('invitation'), TRUE);
             $this->load->library('session');
+            if ($this->db->get_where('ea_users', ['email' => $invitation['email'], 'id_assessment_center' => $this->session->userdata['ac']->id])->num_rows() > 0) {
+                throw new Exception('This email address is already registered.');
+            }
             $this->load->helper('static_helper');
             $invitationToken = static_helper::random_str(64);
             $invitation['ac_id'] = $this->session->userdata['ac']->id;
@@ -1392,7 +1395,6 @@ class Backend_api extends CI_Controller {
             $invitation['sender_name'] = $this->session->userdata['fullname'];
             $invitation['url'] = NEXUS_FRONT_URL . 'assessment-centre/' . $this->session->userdata['ac']->url . '/signup/' . $invitationToken;
             $result = $email->sendInvitation($invitation);
-
 
             if (result) {
                 $invitation['text'] = $invitation['message'];

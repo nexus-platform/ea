@@ -151,9 +151,10 @@ class Email {
         $html = $this->_replaceTemplateVariables($replaceArray, $html);
         
         $this->framework->load->library("email");
-        $this->framework->email->initialize($this->getSmtpParams());
+        $mailSettings = $this->getSmtpParams();
+        $this->framework->email->initialize($mailSettings);
         $this->framework->email->set_crlf("\r\n");
-        $this->framework->email->from($company['company_email'], $company['company_name']);
+        $this->framework->email->from($mailSettings['smtp_user'], $company['company_name']);
         $this->framework->email->to($recipientEmail->get());
         $this->framework->email->subject($title->get());
         $this->framework->email->message($html);
@@ -243,9 +244,10 @@ class Email {
         $html = $this->_replaceTemplateVariables($replaceArray, $html);
 
         $this->framework->load->library("email");
-        $this->framework->email->initialize($this->getSmtpParams());
+        $mailSettings = $this->getSmtpParams();
+        $this->framework->email->initialize($mailSettings);
         $this->framework->email->set_crlf("\r\n");
-        $this->framework->email->from($company['company_email'], $company['company_name']);
+        $this->framework->email->from($mailSettings['smtp_user'], $company['company_name']);
         $this->framework->email->to($recipientEmail->get());
         $this->framework->email->subject($this->framework->lang->line('appointment_cancelled_title'));
         $this->framework->email->message($html);
@@ -277,9 +279,10 @@ class Email {
         $html = $this->_replaceTemplateVariables($replaceArray, $html);
 
         $this->framework->load->library("email");
-        $this->framework->email->initialize($this->getSmtpParams());
+        $mailSettings = $this->getSmtpParams();
+        $this->framework->email->initialize($mailSettings);
         $this->framework->email->set_crlf("\r\n");
-        $this->framework->email->from($company['company_email'], $company['company_name']);
+        $this->framework->email->from($mailSettings['smtp_user'], $company['company_name']);
         $this->framework->email->to($recipientEmail->get());
         $this->framework->email->subject($this->framework->lang->line('new_account_password'));
         $this->framework->email->message($html);
@@ -366,9 +369,10 @@ class Email {
         $html = $this->_replaceTemplateVariables($replaceArray, $html);
 
         $this->framework->load->library("email");
-        $this->framework->email->initialize($this->getSmtpParams());
+        $mailSettings = $this->getSmtpParams();
+        $this->framework->email->initialize($mailSettings);
         $this->framework->email->set_crlf("\r\n");
-        $this->framework->email->from($invitation['sender_email']);
+        $this->framework->email->from($mailSettings['smtp_user'], 'Nexus Platform');
         $this->framework->email->to($invitation['email']);
         $this->framework->email->subject('Join my Assessment Centre on Nexus!');
         $this->framework->email->message($html);
