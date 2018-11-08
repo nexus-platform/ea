@@ -469,7 +469,7 @@ class Providers_Model extends CI_Model {
             // Settings
             $this->load->library('session');
             $ac_id = $this->session->userdata['ac']->id;
-        
+
             $provider['settings'] = $this->db->get_where('ea_user_settings', ['id_users' => $provider['id'], 'id_assessment_center' => $ac_id])->row_array();
             unset($provider['settings']['username']);
             unset($provider['settings']['password']);
@@ -516,7 +516,7 @@ class Providers_Model extends CI_Model {
     public function set_setting($setting_name, $value, $provider_id) {
         $this->load->library('session');
         $ac_id = $this->session->userdata['ac']->id;
-        
+
         $this->db->where(['id_users' => $provider_id, 'id_assessment_center' => $ac_id]);
         return $this->db->update('ea_user_settings', [$setting_name => $value]);
     }
@@ -547,6 +547,28 @@ class Providers_Model extends CI_Model {
         }
 
         foreach ($settings as $name => $value) {
+            if ($name === 'working_plan' && $this->session->userdata['role_slug'] === 'provider') {
+                $newWorkingPlan = json_decode($value, true);
+                $otherWorkingPlans = $this->db->query("select `id_assessment_center`, `working_plan` from `ea_user_settings` where `id_users` = $provider_id and `id_assessment_center` <> $ac_id")->result_array();
+
+                foreach ($newWorkingPlan as $newDay => $newPlan) {
+                    if ($newPlan) {
+                        for ($i = 0; $i < count($otherWorkingPlans); $i++) {
+                            //if ($otherWorkingPlans[$i]['working_plan']) {
+                                $workingPlanAux = json_decode($otherWorkingPlans[$i]['working_plan'], true);
+                                $workingPlanAux[$newDay] = null;
+                                $workingPlanAux = json_encode($workingPlanAux);
+                                $otherWorkingPlans[$i]['working_plan'] = $workingPlanAux;
+                            //}
+                        }
+                    }
+                }
+                foreach ($otherWorkingPlans as $otherWorkingPlan) {
+                    $sql = "update `ea_user_settings` set `working_plan` = '" . $otherWorkingPlan['working_plan'] . "' where `id_users` = $provider_id and `id_assessment_center` = " . $otherWorkingPlan['id_assessment_center'];
+                    $this->db->simple_query($sql);
+                }
+            }
+
             $this->set_setting($name, $value, $provider_id);
         }
     }

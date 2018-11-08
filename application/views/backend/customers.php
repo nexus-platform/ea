@@ -3,31 +3,32 @@
 <script src="<?= asset_url('assets/js/backend_customers.js') ?>"></script>
 <script>
     var GlobalVariables = {
-        csrfToken          : <?= json_encode($this->security->get_csrf_hash()) ?>,
-        availableProviders : <?= json_encode($available_providers) ?>,
-        availableServices  : <?= json_encode($available_services) ?>,
-        secretaryProviders : <?= json_encode($secretary_providers) ?>,
-        dateFormat         : <?= json_encode($date_format) ?>,
-        timeFormat         : <?= json_encode($time_format) ?>,
-        baseUrl            : <?= json_encode($base_url) ?>,
-        customers          : <?= json_encode($customers) ?>,
-        user               : {
-            id         : <?= $user_id ?>,
-            email      : <?= json_encode($user_email) ?>,
-            role_slug  : <?= json_encode($role_slug) ?>,
-            privileges : <?= json_encode($privileges) ?>
+        csrfToken: <?= json_encode($this->security->get_csrf_hash()) ?>,
+        availableProviders: <?= json_encode($available_providers) ?>,
+        availableServices: <?= json_encode($available_services) ?>,
+        secretaryProviders: <?= json_encode($secretary_providers) ?>,
+        dateFormat: <?= json_encode($date_format) ?>,
+        timeFormat: <?= json_encode($time_format) ?>,
+        baseUrl: <?= json_encode($base_url) ?>,
+        customers: <?= json_encode($customers) ?>,
+        user: {
+            id: <?= $user_id ?>,
+            email: <?= json_encode($user_email) ?>,
+            role_slug: <?= json_encode($role_slug) ?>,
+            privileges: <?= json_encode($privileges) ?>
         }
     };
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         BackendCustomers.initialize(true);
+        iframe_resize();
     });
 </script>
 
 <div id="customers-page" class="container-fluid backend-page">
     <div class="row">
-    	<div id="filter-customers" class="filter-records column col-xs-12 col-sm-5">
-    		<form>
+        <div id="filter-customers" class="filter-records column col-xs-12 col-sm-5">
+            <form>
                 <div class="input-group">
                     <input type="text" class="key form-control">
 
@@ -42,34 +43,34 @@
                         </div>
                     </div>
                 </div>
-    		</form>
+            </form>
 
             <h3><?= lang('customers') ?></h3>
             <div class="results"></div>
-    	</div>
+        </div>
 
-    	<div class="record-details col-xs-12 col-sm-7">
+        <div class="record-details col-xs-12 col-sm-7">
             <div class="btn-toolbar">
                 <div id="add-edit-delete-group" class="btn-group">
                     <?php if ($privileges[PRIV_CUSTOMERS]['add'] === TRUE): ?>
-                    <button id="add-customer" class="btn btn-primary">
-                        <span class="glyphicon glyphicon-plus"></span>
+                        <!--<button id="add-customer" class="btn btn-primary">
+                            <span class="glyphicon glyphicon-plus"></span>
                         <?= lang('add') ?>
-                    </button>
+                        </button>-->
                     <?php endif ?>
 
                     <?php if ($privileges[PRIV_CUSTOMERS]['edit'] === TRUE): ?>
-                    <button id="edit-customer" class="btn btn-default" disabled="disabled">
-                        <span class="glyphicon glyphicon-pencil"></span>
-                        <?= lang('edit') ?>
-                    </button>
+                        <button id="edit-customer" class="btn btn-default" disabled="disabled">
+                            <span class="glyphicon glyphicon-pencil"></span>
+                            <?= lang('edit') ?>
+                        </button>
                     <?php endif ?>
 
                     <?php if ($privileges[PRIV_CUSTOMERS]['delete'] === TRUE): ?>
-                    <button id="delete-customer" class="btn btn-default" disabled="disabled">
-                        <span class="glyphicon glyphicon-remove"></span>
-                        <?= lang('delete') ?>
-                    </button>
+                        <button id="delete-customer" class="btn btn-default" disabled="disabled">
+                            <span class="glyphicon glyphicon-remove"></span>
+                            <?= lang('delete') ?>
+                        </button>
                     <?php endif ?>
                 </div>
 
@@ -133,6 +134,15 @@
                         <textarea id="notes" rows="4" class="form-control"></textarea>
                     </div>
 
+                    <div class="form-group">
+                        <label class="control-label" for="status">Status</label>
+                        <select id="status" class="form-control">
+                            <option></option>
+                            <option value="0">Disabled</option>
+                            <option value="1">Enabled</option>
+                        </select>
+                    </div>
+
                     <p class="text-center">
                         <em id="form-message" class="text-danger"><?= lang('fields_are_required') ?></em>
                     </p>
@@ -144,6 +154,6 @@
                     <div id="appointment-details" class="well hidden"></div>
                 </div>
             </div>
-    	</div>
+        </div>
     </div>
 </div>

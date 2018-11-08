@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title><?= $company_name ?> | Easy!Appointments</title>
+        <title><?= $company_name ?> | Appointments</title>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
@@ -27,6 +27,7 @@
             var availableLanguages = <?= json_encode($this->config->item('available_languages')) ?>;
             var EALang = <?= json_encode($this->lang->language) ?>;
         </script>
+        
         <script type="text/javascript">
             function iframe_resize() {
                 var body = document.body,
@@ -43,7 +44,7 @@
         </script>
     </head>
 
-    <body onload="iframe_resize();">
+    <body>
         <nav id="header" class="navbar">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -99,14 +100,16 @@
                             </a>
                         </li>
 
-                        <?php $hidden = ($privileges[PRIV_SYSTEM_SETTINGS]['view'] == TRUE || $privileges[PRIV_USER_SETTINGS]['view'] == TRUE) ? '' : 'hidden'
-                        ?>
+                        <?php $hidden = ($privileges[PRIV_SYSTEM_SETTINGS]['view'] == TRUE || $privileges[PRIV_USER_SETTINGS]['view'] == TRUE) ? '' : 'hidden' ?>
                         <?php $active = ($active_menu == PRIV_SYSTEM_SETTINGS) ? 'active' : '' ?>
                         <li class="<?= $active . $hidden ?>">
-                            <a href="<?= site_url('backend/settings') ?>" class="menu-item"
-                               title="<?= lang('settings_hint') ?>">
-                                   <?= lang('settings') ?>
-                            </a>
+                            <a href="<?= site_url('backend/settings') ?>" class="menu-item" title="<?= lang('settings_hint') ?>"> <?= lang('settings') ?></a>
+                        </li>
+                        
+                        <?php $hidden = ($role_slug === 'provider') ? '' : 'hidden' ?>
+                        <?php $active = ($active_menu == PRIV_USER_PROFILE) ? 'active' : '' ?>
+                        <li class="<?= $active . $hidden ?>">
+                            <a href="<?= site_url('backend/profile') ?>" class="menu-item" title="<?= lang('settings_hint') ?>"> <?= lang('settings') ?></a>
                         </li>
                     </ul>
                 </div>

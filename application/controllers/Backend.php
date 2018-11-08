@@ -109,7 +109,10 @@ class Backend extends CI_Controller {
             $view['edit_appointment'] = NULL;
         }
 
-        $this->load->view('backend/calendar_full', $view);
+        //$this->load->view('backend/calendar_full', $view);
+        $this->load->view('backend/header', $view);
+        $this->load->view('backend/calendar', $view);
+        $this->load->view('backend/footer', $view);
     }
 
     /**
@@ -167,7 +170,10 @@ class Backend extends CI_Controller {
 
         $this->set_user_data($view);
 
-        $this->load->view('backend/customers_full', $view);
+        //$this->load->view('backend/customers_full', $view);
+        $this->load->view('backend/header', $view);
+        $this->load->view('backend/customers', $view);
+        $this->load->view('backend/footer', $view);
     }
 
     /**
@@ -217,7 +223,10 @@ class Backend extends CI_Controller {
         $view['categories'] = $this->services_model->get_all_categories("id_assessment_center = " . $this->session->userdata['ac']->id);
         $this->set_user_data($view);
 
-        $this->load->view('backend/services_full', $view);
+        //$this->load->view('backend/services_full', $view);
+        $this->load->view('backend/header', $view);
+        $this->load->view('backend/services', $view);
+        $this->load->view('backend/footer', $view);
     }
 
     /**
@@ -270,7 +279,56 @@ class Backend extends CI_Controller {
         $view['working_plan'] = $this->settings_model->get_setting('company_working_plan');
         $this->set_user_data($view);
 
-        $this->load->view('backend/users_full', $view);
+        //$this->load->view('backend/users_full', $view);
+        $this->load->view('backend/header', $view);
+        $this->load->view('backend/users', $view);
+        $this->load->view('backend/footer', $view);
+    }
+    
+    /**
+     * Display the backend profile page.
+     *
+     * In this page the na user will be able to manage his data
+     */
+    public function profile() {
+        $this->session->set_userdata('dest_url', site_url('backend/profile'));
+        
+        if (!$this->session->userdata['user_id']) {
+            $jwt = $this->input->get('jwt');
+            $payload = jwt_helper::decode($jwt);
+            $user = $this->db->get_where('ea_users', ['id' => $payload->user_id])->row_array();
+            
+            if ($user) {
+                $this->load->model('companies_model');
+                $this->load->model('roles_model');
+                $this->load->library('session');
+                $this->session->set_userdata('user_id', $user['id']);
+                $this->session->set_userdata('user_email', $user['email']);
+                $this->session->set_userdata('role_slug', $this->roles_model->get_role_slug($user['id_roles']));
+                $this->session->set_userdata('username', $user['email']);
+                $this->session->set_userdata('ac', $this->companies_model->find($this->input->get('ac')));
+            }
+        }
+
+        $this->load->model('settings_model');
+        $this->load->model('providers_model');
+        $this->load->model('user_model');
+
+        $view['role_slug'] = $this->session->userdata('role_slug');
+        $view['base_url'] = $this->config->item('base_url');
+        $view['user_display_name'] = $this->user_model->get_user_display_name($this->session->userdata('user_id'));
+        $view['active_menu'] = PRIV_USER_PROFILE;
+        $view['company_name'] = $this->settings_model->get_setting('company_name');
+        $view['date_format'] = $this->settings_model->get_setting('date_format');
+        $view['time_format'] = $this->settings_model->get_setting('time_format');
+        $view['providers'] = $this->providers_model->get_batch("id_assessment_center = " . $this->session->userdata['ac']->id);
+        $view['working_plan'] = $this->settings_model->get_setting('company_working_plan');
+        $this->set_user_data($view);
+
+        //$this->load->view('backend/users_full', $view);
+        $this->load->view('backend/header', $view);
+        $this->load->view('backend/profile', $view);
+        $this->load->view('backend/footer', $view);
     }
 
     /**
@@ -321,7 +379,10 @@ class Backend extends CI_Controller {
         $view['user_settings'] = $this->user_model->get_settings($user_id);
         $this->set_user_data($view);
 
-        $this->load->view('backend/settings_full', $view);
+        //$this->load->view('backend/settings_full', $view);
+        $this->load->view('backend/header', $view);
+        $this->load->view('backend/settings', $view);
+        $this->load->view('backend/footer', $view);
     }
 
     /**

@@ -13,27 +13,28 @@
 <script src="<?= asset_url('assets/js/backend_calendar_api.js') ?>"></script>
 <script>
     var GlobalVariables = {
-        'csrfToken'             : <?= json_encode($this->security->get_csrf_hash()) ?>,
-        'availableProviders'    : <?= json_encode($available_providers) ?>,
-        'availableServices'     : <?= json_encode($available_services) ?>,
-        'baseUrl'               : <?= json_encode($base_url) ?>,
-        'bookAdvanceTimeout'    : <?= $book_advance_timeout ?>,
-        'dateFormat'            : <?= json_encode($date_format) ?>,
-        'timeFormat'            : <?= json_encode($time_format) ?>,
-        'editAppointment'       : <?= json_encode($edit_appointment) ?>,
-        'customers'             : <?= json_encode($customers) ?>,
-        'secretaryProviders'    : <?= json_encode($secretary_providers) ?>,
-        'calendarView'          : <?= json_encode($calendar_view) ?>,
-        'user'                  : {
-            'id'        : <?= $user_id ?>,
-            'email'     : <?= json_encode($user_email) ?>,
-            'role_slug' : <?= json_encode($role_slug) ?>,
+        'csrfToken': <?= json_encode($this->security->get_csrf_hash()) ?>,
+        'availableProviders': <?= json_encode($available_providers) ?>,
+        'availableServices': <?= json_encode($available_services) ?>,
+        'baseUrl': <?= json_encode($base_url) ?>,
+        'bookAdvanceTimeout': <?= $book_advance_timeout ?>,
+        'dateFormat': <?= json_encode($date_format) ?>,
+        'timeFormat': <?= json_encode($time_format) ?>,
+        'editAppointment': <?= json_encode($edit_appointment) ?>,
+        'customers': <?= json_encode($customers) ?>,
+        'secretaryProviders': <?= json_encode($secretary_providers) ?>,
+        'calendarView': <?= json_encode($calendar_view) ?>,
+        'user': {
+            'id': <?= $user_id ?>,
+            'email': <?= json_encode($user_email) ?>,
+            'role_slug': <?= json_encode($role_slug) ?>,
             'privileges': <?= json_encode($privileges) ?>
         }
     };
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         BackendCalendar.initialize(GlobalVariables.calendarView);
+        iframe_resize();
     });
 </script>
 
@@ -48,16 +49,14 @@
         </div>
 
         <div id="calendar-actions" class="col-xs-12 col-sm-7">
-            <?php if (($role_slug == DB_SLUG_ADMIN || $role_slug == DB_SLUG_PROVIDER)
-                    && Config::GOOGLE_SYNC_FEATURE == TRUE): ?>
-                <button id="google-sync" class="btn btn-primary"
-                        title="<?= lang('trigger_google_sync_hint') ?>">
+            <?php if (($role_slug == DB_SLUG_ADMIN || $role_slug == DB_SLUG_PROVIDER) && Config::GOOGLE_SYNC_FEATURE == TRUE):
+                ?>
+                <button id="google-sync" class="btn btn-primary" title="<?= lang('trigger_google_sync_hint') ?>">
                     <span class="glyphicon glyphicon-refresh"></span>
                     <span><?= lang('synchronize') ?></span>
                 </button>
 
-                <button id="enable-sync" class="btn btn-default" data-toggle="button"
-                        title="<?= lang('enable_appointment_sync_hint') ?>">
+                <button id="enable-sync" class="btn btn-default" data-toggle="button" title="<?= lang('enable_appointment_sync_hint') ?>">
                     <span class="glyphicon glyphicon-calendar"></span>
                     <span><?= lang('enable_sync') ?></span>
                 </button>
@@ -80,9 +79,9 @@
                 <?= lang('reload') ?>
             </button>
 
-            <button id="toggle-fullscreen" class="btn btn-default">
+            <!--<button id="toggle-fullscreen" class="btn btn-default">
                 <span class="glyphicon glyphicon-fullscreen"></span>
-            </button>
+            </button>-->
         </div>
     </div>
 
@@ -117,7 +116,7 @@
                                         // Group services by category, only if there is at least one service
                                         // with a parent category.
                                         $has_category = FALSE;
-                                        foreach($available_services as $service) {
+                                        foreach ($available_services as $service) {
                                             if ($service['category_id'] != NULL) {
                                                 $has_category = TRUE;
                                                 break;
@@ -127,7 +126,7 @@
                                         if ($has_category) {
                                             $grouped_services = array();
 
-                                            foreach($available_services as $service) {
+                                            foreach ($available_services as $service) {
                                                 if ($service['category_id'] != NULL) {
                                                     if (!isset($grouped_services[$service['category_name']])) {
                                                         $grouped_services[$service['category_name']] = array();
@@ -140,29 +139,28 @@
                                             // We need the uncategorized services at the end of the list so
                                             // we will use another iteration only for the uncategorized services.
                                             $grouped_services['uncategorized'] = array();
-                                            foreach($available_services as $service) {
+                                            foreach ($available_services as $service) {
                                                 if ($service['category_id'] == NULL) {
                                                     $grouped_services['uncategorized'][] = $service;
                                                 }
                                             }
 
-                                            foreach($grouped_services as $key => $group) {
-                                                $group_label = ($key != 'uncategorized')
-                                                    ? $group[0]['category_name'] : 'Uncategorized';
+                                            foreach ($grouped_services as $key => $group) {
+                                                $group_label = ($key != 'uncategorized') ? $group[0]['category_name'] : 'Uncategorized';
 
                                                 if (count($group) > 0) {
                                                     echo '<optgroup label="' . $group_label . '">';
-                                                    foreach($group as $service) {
+                                                    foreach ($group as $service) {
                                                         echo '<option value="' . $service['id'] . '">'
-                                                            . $service['name'] . '</option>';
+                                                        . $service['name'] . '</option>';
                                                     }
                                                     echo '</optgroup>';
                                                 }
                                             }
-                                        }  else {
-                                            foreach($available_services as $service) {
+                                        } else {
+                                            foreach ($available_services as $service) {
                                                 echo '<option value="' . $service['id'] . '">'
-                                                    . $service['name'] . '</option>';
+                                                . $service['name'] . '</option>';
                                             }
                                         }
                                         ?>
@@ -203,10 +201,10 @@
                     <fieldset>
                         <legend>
                             <?= lang('customer_details_title') ?>
-                            <button id="new-customer" class="btn btn-default btn-xs"
+                            <!--<button id="new-customer" class="btn btn-default btn-xs"
                                     title="<?= lang('clear_fields_add_existing_customer_hint') ?>"
                                     type="button"><?= lang('new') ?>
-                            </button>
+                            </button>-->
                             <button id="select-customer" class="btn btn-primary btn-xs"
                                     title="<?= lang('pick_existing_customer_hint') ?>"
                                     type="button"><?= lang('select') ?>
@@ -223,43 +221,13 @@
                             <div class="col-xs-12 col-sm-6">
                                 <div class="form-group">
                                     <label for="first-name" class="control-label"><?= lang('first_name') ?> *</label>
-                                    <input id="first-name" class="required form-control">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="last-name" class="control-label"><?= lang('last_name') ?> *</label>
-                                    <input id="last-name" class="required form-control">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="email" class="control-label"><?= lang('email') ?> *</label>
-                                    <input id="email" class="required form-control">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="phone-number" class="control-label"><?= lang('phone_number') ?> *</label>
-                                    <input id="phone-number" class="required form-control">
+                                    <input readonly id="first-name" class="required form-control">
                                 </div>
                             </div>
                             <div class="col-xs-12 col-sm-6">
                                 <div class="form-group">
-                                    <label for="address" class="control-label"><?= lang('address') ?></label>
-                                    <input id="address" class="form-control">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="city" class="control-label"><?= lang('city') ?></label>
-                                    <input id="city" class="form-control">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="zip-code" class="control-label"><?= lang('zip_code') ?></label>
-                                    <input id="zip-code" class="form-control">
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="customer-notes" class="control-label"><?= lang('notes') ?></label>
-                                    <textarea id="customer-notes" rows="2" class="form-control"></textarea>
+                                    <label for="last-name" class="control-label"><?= lang('last_name') ?> *</label>
+                                    <input readonly id="last-name" class="required form-control">
                                 </div>
                             </div>
                         </div>
@@ -290,7 +258,7 @@
                 <form>
                     <fieldset>
                         <input id="unavailable-id" type="hidden">
-                        
+
                         <div class="form-group">
                             <label for="unavailable-provider" class="control-label"><?= lang('provider') ?></label>
                             <select id="unavailable-provider" class="form-control"></select>

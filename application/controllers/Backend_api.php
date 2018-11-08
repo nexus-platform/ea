@@ -1003,19 +1003,25 @@ class Backend_api extends CI_Controller {
      */
     public function ajax_filter_providers() {
         try {
-            if ($this->privileges[PRIV_USERS]['view'] == FALSE) {
+            $this->load->library('session');
+            if ($this->privileges[PRIV_USERS]['view'] == FALSE && $this->session->userdata['role_slug'] !== 'provider') {
                 throw new Exception('You do not have the required privileges for this task.');
             }
-            $this->load->library('session');
+            
 
             $this->load->model('providers_model');
             $key = $this->db->escape_str($this->input->post('key'));
-
-            $where = 'id_assessment_center = ' . $this->session->userdata['ac']->id . ' and (first_name LIKE "%' . $key . '%" OR last_name LIKE "%' . $key . '%" ' .
+            
+            if ($this->session->userdata['role_slug'] !== 'provider') {
+                $where = 'id_assessment_center = ' . $this->session->userdata['ac']->id . ' and (first_name LIKE "%' . $key . '%" OR last_name LIKE "%' . $key . '%" ' .
                     'OR email LIKE "%' . $key . '%" OR mobile_number LIKE "%' . $key . '%" ' .
                     'OR phone_number LIKE "%' . $key . '%" OR address LIKE "%' . $key . '%" ' .
                     'OR city LIKE "%' . $key . '%" OR state LIKE "%' . $key . '%" ' .
                     'OR zip_code LIKE "%' . $key . '%" OR notes LIKE "%' . $key . '%")';
+            } else {
+                $where = 'id_assessment_center = ' . $this->session->userdata['ac']->id . ' and id = ' . $this->session->userdata['user_id'];
+            }
+            
             $providers = $this->providers_model->get_batch($where);
             $this->output
                     ->set_content_type('application/json')
@@ -1055,6 +1061,47 @@ class Backend_api extends CI_Controller {
 
             $provider_id = $this->providers_model->add($provider);
 
+
+            $this->output
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode([
+                        'status' => AJAX_SUCCESS,
+                        'id' => $provider_id
+            ]));
+        } catch (Exception $exc) {
+            $this->output
+                    ->set_content_type('application/json')
+                    ->set_output(json_encode(['exceptions' => [exceptionToJavaScript($exc)]]));
+        }
+    }
+    
+    /**
+     * [AJAX] Save a provider profile data.
+     *
+     * Required POST Parameters:
+     *
+     * - array $_POST['provider'] A json encoded array that contains the provider data. If an 'id'
+     * value is provided then the record is going to be updated.
+     *
+     * Outputs the success constant 'AJAX_SUCCESS' so javascript knows that everything completed successfully.
+     */
+    public function ajax_save_profile() {
+        try {
+            $this->load->model('providers_model');
+            $this->load->library('session');
+            $provider = json_decode($this->input->post('provider'), TRUE);
+
+            if ($this->session->userdata['role_slug'] !== 'provider') {
+                throw new Exception('You do not have the required privileges for this task.');
+            }
+
+            if (!isset($provider['settings']['working_plan'])) {
+                $this->load->model('settings_model');
+                $provider['settings']['working_plan'] = $this->settings_model
+                        ->get_setting('company_working_plan');
+            }
+
+            $provider_id = $this->providers_model->add($provider);
 
             $this->output
                     ->set_content_type('application/json')

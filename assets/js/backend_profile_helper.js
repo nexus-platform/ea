@@ -247,7 +247,7 @@
      * then the update operation is going to be executed.
      */
     ProvidersHelper.prototype.save = function (provider) {
-        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_provider';
+        var postUrl = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_save_profile';
         var postData = {
             csrfToken: GlobalVariables.csrfToken,
             provider: JSON.stringify(provider)
@@ -515,7 +515,8 @@
             if (!GeneralFunctions.handleAjaxExceptions(response)) {
                 return;
             }
-
+            
+            
             this.filterResults = response;
 
             $('#filter-providers .results').html('');
@@ -527,9 +528,11 @@
             if (response.length == 0) {
                 $('#filter-providers .results').html('<em>' + EALang.no_records_found + '</em>');
             }
+            
+            selectId = this.filterResults[0].id;
 
             if (selectId != undefined) {
-                this.select(selectId, display);
+                this.select(selectId, true);
             }
         }.bind(this), 'json').fail(GeneralFunctions.ajaxFailureHandler);
     };

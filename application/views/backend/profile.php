@@ -1,7 +1,5 @@
-<script src="<?= asset_url('assets/js/backend_users_admins.js') ?>"></script>
-<script src="<?= asset_url('assets/js/backend_users_providers.js') ?>"></script>
-<script src="<?= asset_url('assets/js/backend_users_secretaries.js') ?>"></script>
-<script src="<?= asset_url('assets/js/backend_users.js') ?>"></script>
+<script src="<?= asset_url('assets/js/backend_profile_helper.js') ?>"></script>
+<script src="<?= asset_url('assets/js/backend_profile.js') ?>"></script>
 <script src="<?= asset_url('assets/js/working_plan.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/jquery-ui/jquery-ui-timepicker-addon.js') ?>"></script>
 <script src="<?= asset_url('assets/ext/jquery-jeditable/jquery.jeditable.min.js') ?>"></script>
@@ -35,9 +33,7 @@
     <!-- PAGE NAVIGATION -->
 
     <ul class="nav nav-tabs" role="tablist">
-        <li role="presentation" class="active"><a href="#providers" aria-controls="providers" role="tab" data-toggle="tab"><?= lang('providers') ?></a></li>
-        <!--<li role="presentation"><a href="#secretaries" aria-controls="secretaries" role="tab" data-toggle="tab"><?= lang('secretaries') ?></a></li>-->
-        <!--<li role="presentation"><a href="#admins" aria-controls="admins" role="tab" data-toggle="tab"><?= lang('admins') ?></a></li>-->
+        <li role="presentation" class="active"><a href="#providers" aria-controls="providers" role="tab" data-toggle="tab">My personal information</a></li>
     </ul>
 
     <div class="tab-content">
@@ -47,41 +43,16 @@
         <div role="tabpanel" class="tab-pane active" id="providers">
             <div class="row">
                 <div id="filter-providers" class="filter-records column col-xs-12 col-sm-5">
-                    <form>
-                        <div class="input-group">
-                            <input type="text" class="key form-control">
-
-                            <span class="input-group-addon">
-                                <div>
-                                    <button class="filter btn btn-default" type="submit" title="<?= lang('filter') ?>">
-                                        <span class="glyphicon glyphicon-search"></span>
-                                    </button>
-                                    <button class="clear btn btn-default" type="button" title="<?= lang('clear') ?>">
-                                        <span class="glyphicon glyphicon-repeat"></span>
-                                    </button>
-                                </div>
-                            </span>
-                        </div>
-                    </form>
-
-                    <h3><?= lang('providers') ?></h3>
+                    <h3></h3>
                     <div class="results"></div>
                 </div>
 
                 <div class="record-details column col-xs-12 col-sm-7">
                     <div class="pull-left">
                         <div class="add-edit-delete-group btn-group">
-                            <button id="add-provider" class="btn btn-primary">
-                                <span class="glyphicon glyphicon-plus"></span>
-                                <?= lang('add') ?>
-                            </button>
                             <button id="edit-provider" class="btn btn-default" disabled="disabled">
                                 <span class="glyphicon glyphicon-pencil"></span>
                                 <?= lang('edit') ?>
-                            </button>
-                            <button id="delete-provider" class="btn btn-default" disabled="disabled">
-                                <span class="glyphicon glyphicon-remove"></span>
-                                <?= lang('delete') ?>
                             </button>
                         </div>
 
@@ -150,7 +121,14 @@
                                     <label for="provider-city"><?= lang('city') ?></label>
                                     <input id="provider-city" class="form-control" maxlength="256">
                                 </div>
-
+                                
+                            </div>
+                            <div class="provider-settings col-xs-12 col-sm-6">
+                                <!--<div class="form-group">
+                                    <label for="provider-username"><?= lang('username') ?> *</label>
+                                    <input id="provider-username" class="form-control required" maxlength="256">
+                                </div>-->
+                                
                                 <div class="form-group">
                                     <label for="provider-state"><?= lang('state') ?></label>
                                     <input id="provider-state" class="form-control" maxlength="256">
@@ -160,17 +138,11 @@
                                     <label for="provider-zip-code"><?= lang('zip_code') ?></label>
                                     <input id="provider-zip-code" class="form-control" maxlength="64">
                                 </div>
-
+                                
                                 <div class="form-group">
                                     <label for="provider-notes"><?= lang('notes') ?></label>
                                     <textarea id="provider-notes" class="form-control" rows="3"></textarea>
                                 </div>
-                            </div>
-                            <div class="provider-settings col-xs-12 col-sm-6">
-                                <!--<div class="form-group">
-                                    <label for="provider-username"><?= lang('username') ?> *</label>
-                                    <input id="provider-username" class="form-control required" maxlength="256">
-                                </div>-->
 
                                 <div class="form-group">
                                     <label for="provider-password"><?= lang('password') ?> *</label>
@@ -190,15 +162,6 @@
                                     </select>
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="provider-status">Status *</label>
-                                    <select id="provider-status" class="form-control required">
-                                        <option></option>
-                                        <option value="0">Disabled</option>
-                                        <option value="1">Enabled</option>
-                                    </select>
-                                </div>
-
                                 <br>
 
                                 <button type="button" id="provider-notifications" class="btn btn-default" data-toggle="button">
@@ -207,9 +170,7 @@
                                 </button>
 
                                 <br><br>
-
-                                <h4><?= lang('services') ?></h4>
-                                <div id="provider-services" class="well"></div>
+                                
                             </div>
                         </div>
                     </div>

@@ -6,25 +6,26 @@
 <script src="<?= asset_url('assets/ext/jquery-jeditable/jquery.jeditable.min.js') ?>"></script>
 <script>
     var GlobalVariables = {
-        'csrfToken'     : <?= json_encode($this->security->get_csrf_hash()) ?>,
-        'baseUrl'       : <?= json_encode($base_url) ?>,
-        'dateFormat'    : <?= json_encode($date_format) ?>,
-        'timeFormat'    : <?= json_encode($time_format) ?>,
-        'userSlug'      : <?= json_encode($role_slug) ?>,
-        'settings'      : {
-            'system'    : <?= json_encode($system_settings) ?>,
-            'user'      : <?= json_encode($user_settings) ?>
+        'csrfToken': <?= json_encode($this->security->get_csrf_hash()) ?>,
+        'baseUrl': <?= json_encode($base_url) ?>,
+        'dateFormat': <?= json_encode($date_format) ?>,
+        'timeFormat': <?= json_encode($time_format) ?>,
+        'userSlug': <?= json_encode($role_slug) ?>,
+        'settings': {
+            'system': <?= json_encode($system_settings) ?>,
+            'user': <?= json_encode($user_settings) ?>
         },
-        'user'          : {
-            'id'        : <?= $user_id ?>,
-            'email'     : <?= json_encode($user_email) ?>,
-            'role_slug' : <?= json_encode($role_slug) ?>,
+        'user': {
+            'id': <?= $user_id ?>,
+            'email': <?= json_encode($user_email) ?>,
+            'role_slug': <?= json_encode($role_slug) ?>,
             'privileges': <?= json_encode($privileges) ?>
         }
     };
 
-    $(document).ready(function() {
+    $(document).ready(function () {
         BackendSettings.initialize(true);
+        iframe_resize();
     });
 </script>
 
@@ -50,9 +51,9 @@
                 <a href="#current-user" aria-controls="current-user" role="tab" data-toggle="tab"><?= lang('current_user') ?></a>
             </li>
         <?php endif ?>
-        <li role="presentation">
+        <!--<li role="presentation">
             <a href="#about-app" aria-controls="about-app" role="tab" data-toggle="tab"><?= lang('about_app') ?></a>
-        </li>
+        </li>-->
     </ul>
 
     <div class="tab-content">
@@ -84,13 +85,13 @@
                                 </span>
                             </div>
 
-                            <div class="form-group">
+                            <!--<div class="form-group">
                                 <label for="company-email"><?= lang('company_email') ?> *</label>
                                 <input id="company-email" data-field="company_email" class="required form-control">
                                 <span class="help-block">
-                                    <?= lang('company_email_hint') ?>
+                            <?= lang('company_email_hint') ?>
                                 </span>
-                            </div>
+                            </div>-->
 
                             <div class="form-group">
                                 <label for="company-link"><?= lang('company_link') ?> *</label>
@@ -306,7 +307,7 @@
                             <div>
                                 <button type="button" class="add-break btn btn-primary">
                                     <span class="glyphicon glyphicon-white glyphicon glyphicon-plus"></span>
-                                    <?= lang('add_break');?>
+                                    <?= lang('add_break'); ?>
                                 </button>
                             </div>
 
@@ -408,6 +409,7 @@
         <?php $hidden = ($privileges[PRIV_USER_SETTINGS]['view'] == TRUE) ? '' : 'hidden' ?>
         <div role="tabpanel" class="tab-pane <?= $hidden ?>" id="current-user">
             <form>
+                
                 <div class="row">
                     <fieldset class="col-xs-12 col-sm-6 personal-info-wrapper">
                         <legend>
@@ -475,36 +477,36 @@
                     </fieldset>
 
                     <fieldset class="col-xs-12 col-sm-6 miscellaneous-wrapper">
-                    <legend><?= lang('system_login') ?></legend>
+                        <legend><?= lang('system_login') ?></legend>
 
-                    <div class="form-group">
-                        <label for="username"><?= lang('username') ?> *</label>
-                        <input id="username" class="form-control required">
-                    </div>
+                        <div class="form-group">
+                            <label for="username"><?= lang('username') ?> *</label>
+                            <input id="username" class="form-control required">
+                        </div>
 
-                    <div class="form-group">
-                        <label for="password"><?= lang('password') ?></label>
-                        <input type="password" id="password" class="form-control">
-                    </div>
+                        <div class="form-group">
+                            <label for="password"><?= lang('password') ?></label>
+                            <input type="password" id="password" class="form-control">
+                        </div>
 
-                    <div class="form-group">
-                        <label for="retype-password"><?= lang('retype_password') ?></label>
-                        <input type="password" id="retype-password" class="form-control">
-                    </div>
+                        <div class="form-group">
+                            <label for="retype-password"><?= lang('retype_password') ?></label>
+                            <input type="password" id="retype-password" class="form-control">
+                        </div>
 
-                    <div class="form-group">
-                        <label for="calendar-view"><?= lang('calendar') ?> *</label>
-                        <select id="calendar-view" class="form-control required">
-                            <option value="default">Default</option>
-                            <option value="table">Table</option>
-                        </select>
-                    </div>
+                        <div class="form-group">
+                            <label for="calendar-view"><?= lang('calendar') ?> *</label>
+                            <select id="calendar-view" class="form-control required">
+                                <option value="default">Default</option>
+                                <option value="table">Table</option>
+                            </select>
+                        </div>
 
-                    <button type="button" id="user-notifications" class="btn btn-default" data-toggle="button">
-                        <span class="glyphicon glyphicon-envelope"></span>
-                        <?= lang('receive_notifications') ?>
-                    </button>
-                </fieldset>
+                        <button type="button" id="user-notifications" class="btn btn-default" data-toggle="button">
+                            <span class="glyphicon glyphicon-envelope"></span>
+                            <?= lang('receive_notifications') ?>
+                        </button>
+                    </fieldset>
                 </div>
             </form>
         </div>
