@@ -19,6 +19,7 @@
 
     $(document).ready(function () {
         BackendServices.initialize(true);
+        iframe_resize();
     });
 </script>
 

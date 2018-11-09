@@ -75,12 +75,12 @@ class User extends CI_Controller {
         $this->load->model('settings_model');
 
         $this->session->unset_userdata('user_id');
+        $this->session->unset_userdata('user_status');
         $this->session->unset_userdata('user_email');
         $this->session->unset_userdata('role_slug');
         $this->session->unset_userdata('username');
         $this->session->unset_userdata('dest_url');
         $this->session->unset_userdata('ac');
-
         /*$view['base_url'] = $this->config->item('base_url');
         $view['company_name'] = $this->settings_model->get_setting('company_name');
         $this->load->view('user/logout', $view);*/

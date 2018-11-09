@@ -61,7 +61,7 @@ window.FrontendBook = window.FrontendBook || {};
             window.console = function () {
             }; // IE compatibility
         }
-        
+
         if (GlobalVariables.displayCookieNotice) {
             cookieconsent.initialise({
                 palette: {
@@ -81,14 +81,14 @@ window.FrontendBook = window.FrontendBook || {};
             });
 
             $('.cc-link').replaceWith(
-                $('<a/>', {
-                    'data-toggle': 'modal',
-                    'data-target': '#cookie-notice-modal',
-                    'href': '#',
-                    'class': 'cc-link',
-                    'text': $('.cc-link').text()
-                })
-            );
+                    $('<a/>', {
+                        'data-toggle': 'modal',
+                        'data-target': '#cookie-notice-modal',
+                        'href': '#',
+                        'class': 'cc-link',
+                        'text': $('.cc-link').text()
+                    })
+                    );
         }
 
         FrontendBook.manageMode = manageMode;
@@ -137,7 +137,7 @@ window.FrontendBook = window.FrontendBook || {};
             onChangeMonthYear: function (year, month, instance) {
                 var currentDate = new Date(year, month - 1, 1);
                 FrontendBookApi.getUnavailableDates($('#select-provider').val(), $('#select-service').val(),
-                    currentDate.toString('yyyy-MM-dd'));
+                        currentDate.toString('yyyy-MM-dd'));
             }
         });
 
@@ -149,7 +149,7 @@ window.FrontendBook = window.FrontendBook || {};
         // If the manage mode is true, the appointments data should be loaded by default.
         if (FrontendBook.manageMode) {
             _applyAppointmentData(GlobalVariables.appointmentData,
-                GlobalVariables.providerData, GlobalVariables.customerData);
+                    GlobalVariables.providerData, GlobalVariables.customerData);
         } else {
             var $selectProvider = $('#select-provider');
             var $selectService = $('#select-service');
@@ -173,16 +173,16 @@ window.FrontendBook = window.FrontendBook || {};
 
                     if (provider.id === selectedProviderId && provider.services.length > 0) {
                         $selectService
-                            .val(provider.services[0])
-                            .trigger('change');
+                                .val(provider.services[0])
+                                .trigger('change');
                     }
                 }
             }
 
             if (selectedProviderId && $selectProvider.find('option[value="' + selectedProviderId + '"]').length > 0) {
                 $selectProvider
-                    .val(selectedProviderId)
-                    .trigger('change');
+                        .val(selectedProviderId)
+                        .trigger('change');
             }
 
         }
@@ -199,7 +199,7 @@ window.FrontendBook = window.FrontendBook || {};
          */
         $('#select-provider').change(function () {
             FrontendBookApi.getUnavailableDates($(this).val(), $('#select-service').val(),
-                $('#select-date').datepicker('getDate').toString('yyyy-MM-dd'));
+                    $('#select-date').datepicker('getDate').toString('yyyy-MM-dd'));
             FrontendBook.updateConfirmFrame();
         });
 
@@ -219,22 +219,26 @@ window.FrontendBook = window.FrontendBook || {};
                     // add him to the listbox.
                     if (serviceId == currServiceId) {
                         var optionHtml = '<option value="' + provider.id + '">'
-                            + provider.first_name + ' ' + provider.last_name
-                            + '</option>';
+                                + provider.first_name + ' ' + provider.last_name
+                                + '</option>';
                         $('#select-provider').append(optionHtml);
                     }
                 });
             });
 
+            var service = getServiceById(currServiceId);
+
             // Add the "Any Provider" entry.
-            if ($('#select-provider option').length >= 1) {
-                $('#select-provider').append(new Option('- ' + EALang.any_provider + ' -', 'any-provider'));
+            if (service.availabilities_type === 'flexible') {
+                if ($('#select-provider option').length >= 1) {
+                    $('#select-provider').append(new Option('- ' + EALang.any_provider + ' -', 'any-provider'));
+                }
             }
 
             FrontendBookApi.getUnavailableDates($('#select-provider').val(), $(this).val(),
-                $('#select-date').datepicker('getDate').toString('yyyy-MM-dd'));
+                    $('#select-date').datepicker('getDate').toString('yyyy-MM-dd'));
             FrontendBook.updateConfirmFrame();
-            _updateServiceDescription($('#select-service').val(), $('#service-description'));
+            _updateServiceDescription(service, $('#service-description'));
         });
 
         /**
@@ -256,9 +260,9 @@ window.FrontendBook = window.FrontendBook || {};
                 if ($('.selected-hour').length == 0) {
                     if ($('#select-hour-prompt').length == 0) {
                         $('#available-hours').append('<br><br>'
-                            + '<span id="select-hour-prompt" class="text-danger">'
-                            + EALang.appointment_hour_missing
-                            + '</span>');
+                                + '<span id="select-hour-prompt" class="text-danger">'
+                                + EALang.appointment_hour_missing
+                                + '</span>');
                     }
                     return;
                 }
@@ -374,7 +378,7 @@ window.FrontendBook = window.FrontendBook || {};
                 ];
 
                 GeneralFunctions.displayMessageBox(EALang.cancel_appointment_title,
-                    EALang.write_appointment_removal_reason, buttons);
+                        EALang.write_appointment_removal_reason, buttons);
 
                 $('#message_box').append('<textarea id="cancel-reason" rows="3"></textarea>');
                 $('#cancel-reason').css('width', '100%');
@@ -398,7 +402,7 @@ window.FrontendBook = window.FrontendBook || {};
                 ];
 
                 GeneralFunctions.displayMessageBox(EALang.delete_personal_information,
-                    EALang.delete_personal_information_prompt, buttons);
+                        EALang.delete_personal_information_prompt, buttons);
             });
         }
 
@@ -510,14 +514,14 @@ window.FrontendBook = window.FrontendBook || {};
         });
 
         var html =
-            '<h4>' + $('#select-service option:selected').text() + '</h4>' +
-            '<p>'
-            + '<strong class="text-primary">'
-            + $('#select-provider option:selected').text() + '<br>'
-            + selectedDate + ' ' + $('.selected-hour').text()
-            + servicePrice + ' ' + serviceCurrency
-            + '</strong>' +
-            '</p>';
+                '<h4>' + $('#select-service option:selected').text() + '</h4>' +
+                '<p>'
+                + '<strong class="text-primary">'
+                + $('#select-provider option:selected').text() + '<br>'
+                + selectedDate + ' ' + $('.selected-hour').text()
+                + servicePrice + ' ' + serviceCurrency
+                + '</strong>' +
+                '</p>';
 
         $('#appointment-details').html(html);
 
@@ -531,18 +535,18 @@ window.FrontendBook = window.FrontendBook || {};
         var zipCode = GeneralFunctions.escapeHtml($('#zip-code').val());
 
         html =
-            '<h4>' + firstName + ' ' + lastName + '</h4>' +
-            '<p>' +
-            EALang.phone + ': ' + phoneNumber +
-            '<br/>' +
-            EALang.email + ': ' + email +
-            '<br/>' +
-            EALang.address + ': ' + address +
-            '<br/>' +
-            EALang.city + ': ' + city +
-            '<br/>' +
-            EALang.zip_code + ': ' + zipCode +
-            '</p>';
+                '<h4>' + firstName + ' ' + lastName + '</h4>' +
+                '<p>' +
+                EALang.phone + ': ' + phoneNumber +
+                '<br/>' +
+                EALang.email + ': ' + email +
+                '<br/>' +
+                EALang.address + ': ' + address +
+                '<br/>' +
+                EALang.city + ': ' + city +
+                '<br/>' +
+                EALang.zip_code + ': ' + zipCode +
+                '</p>';
 
         $('#customer-details').html(html);
 
@@ -562,7 +566,7 @@ window.FrontendBook = window.FrontendBook || {};
 
         postData.appointment = {
             start_datetime: $('#select-date').datepicker('getDate').toString('yyyy-MM-dd')
-            + ' ' + Date.parse($('.selected-hour').text()).toString('HH:mm') + ':00',
+                    + ' ' + Date.parse($('.selected-hour').text()).toString('HH:mm') + ':00',
             end_datetime: _calcEndDatetime(),
             notes: $('#notes').val(),
             is_unavailable: false,
@@ -599,7 +603,7 @@ window.FrontendBook = window.FrontendBook || {};
 
         // Add the duration to the start datetime.
         var startDatetime = $('#select-date').datepicker('getDate').toString('dd-MM-yyyy')
-            + ' ' + Date.parse($('.selected-hour').text()).toString('HH:mm');
+                + ' ' + Date.parse($('.selected-hour').text()).toString('HH:mm');
         startDatetime = Date.parseExact(startDatetime, 'dd-MM-yyyy HH:mm');
         var endDatetime = undefined;
 
@@ -630,7 +634,7 @@ window.FrontendBook = window.FrontendBook || {};
 
             // Set Appointment Date
             $('#select-date').datepicker('setDate',
-                Date.parseExact(appointment.start_datetime, 'yyyy-MM-dd HH:mm:ss'));
+                    Date.parseExact(appointment.start_datetime, 'yyyy-MM-dd HH:mm:ss'));
             FrontendBookApi.getAvailableHours($('#select-date').val());
 
             // Apply Customer's Data
@@ -642,7 +646,7 @@ window.FrontendBook = window.FrontendBook || {};
             $('#city').val(customer.city);
             $('#zip-code').val(customer.zip_code);
             var appointmentNotes = (appointment.notes !== null)
-                ? appointment.notes : '';
+                    ? appointment.notes : '';
             $('#notes').val(appointmentNotes);
 
             FrontendBook.updateConfirmFrame();
@@ -651,6 +655,16 @@ window.FrontendBook = window.FrontendBook || {};
         } catch (exc) {
             return false;
         }
+    }
+
+    function getServiceById(serviceId) {
+        var result = null;
+        $.each(GlobalVariables.availableServices, function (index, service) {
+            if (service.id === serviceId) {
+                result = service;
+            }
+        });
+        return result;
     }
 
     /**
@@ -662,30 +676,23 @@ window.FrontendBook = window.FrontendBook || {};
      * @param {Object} $div The destination div jquery object (e.g. provide $('#div-id')
      * object as value).
      */
-    function _updateServiceDescription(serviceId, $div) {
+    function _updateServiceDescription(service, $div) {
         var html = '';
+        html = '<strong>' + service.name + ' </strong>';
 
-        $.each(GlobalVariables.availableServices, function (index, service) {
-            if (service.id == serviceId) { // Just found the service.
-                html = '<strong>' + service.name + ' </strong>';
+        if (service.description != '' && service.description != null) {
+            html += '<br>' + service.description + '<br>';
+        }
 
-                if (service.description != '' && service.description != null) {
-                    html += '<br>' + service.description + '<br>';
-                }
+        if (service.duration != '' && service.duration != null) {
+            html += '[' + EALang.duration + ' ' + service.duration + ' ' + EALang.minutes + ']';
+        }
 
-                if (service.duration != '' && service.duration != null) {
-                    html += '[' + EALang.duration + ' ' + service.duration + ' ' + EALang.minutes + ']';
-                }
+        if (service.price != '' && service.price != null) {
+            html += '[' + EALang.price + ' ' + service.price + ' ' + service.currency + ']';
+        }
 
-                if (service.price != '' && service.price != null) {
-                    html += '[' + EALang.price + ' ' + service.price + ' ' + service.currency + ']';
-                }
-
-                html += '<br>';
-
-                return false;
-            }
-        });
+        html += '<br>';
 
         $div.html(html);
 

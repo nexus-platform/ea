@@ -36,6 +36,20 @@
     <body onresize="iframe_resize();" onload="iframe_resize();">
         <div id="main" class="container">
             <div class="wrapper row">
+                <?php
+                if ($user_status === '0') {
+                ?>
+                <div class="row" style="margin-top: 50px;">
+                    <div class="col-xs-12">
+                        <h5 class="text-center">
+                            <b>Your account has been disabled on this Centre.</b><br/>
+                            Contact the <a href="mailto:<?= $admin ?>">administrator </a> if you believe this is an error.
+                        </h5>
+                    </div>
+                </div>
+                <?php
+                } else {
+                ?>
                 <div id="book-appointment-wizard" class="col-xs-12 col-md-10 col-md-offset-1 col-lg-8 col-lg-offset-2">
 
                     <!-- FRAME TOP BAR -->
@@ -269,6 +283,9 @@
                     </div>
 
                 </div>
+                <?php
+                }
+                ?>
             </div>
         </div>
 

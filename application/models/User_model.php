@@ -32,8 +32,9 @@ class User_Model extends CI_Model {
      * @todo Refactor this method as it does not do as it states.
      */
     public function get_settings($user_id) {
-        $user = $this->db->get_where('user', ['id' => $user_id])->row_array();
-        $user['settings'] = $this->db->get_where('ea_user_settings', ['id_users' => $user_id])->row_array();
+        $this->load->library('session');
+        $user = $this->db->get_where('ea_users', ['id' => $user_id, 'id_assessment_center' => $this->session->userdata['ac']->id])->row_array();
+        $user['settings'] = $this->db->get_where('ea_user_settings', ['id_users' => $user_id, 'id_assessment_center' => $this->session->userdata['ac']->id])->row_array();
         unset($user['settings']['id_users']);
         return $user;
     }

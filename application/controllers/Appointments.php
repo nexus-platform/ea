@@ -66,8 +66,8 @@ class Appointments extends CI_Controller {
         $payload = jwt_helper::decode($this->input->get('jwt'));
         $user = $this->db->get_where('ea_users', ['id' => $payload->user_id, 'id_assessment_center' => $ac->id])->row_array();
 
-        if (!$user || $user['id_roles'] != 3) {
-            return 'You are not allowed to acess this resource.';
+        if (!$user || $user['id_roles'] !== '3') {
+            throw new Exception('You are not allowed to acess this resource.');
         }
         $this->load->library('session');
         $this->load->model('roles_model');
@@ -166,6 +166,8 @@ class Appointments extends CI_Controller {
                 'terms_and_conditions_content' => $terms_and_conditions_content,
                 'display_privacy_policy' => $display_privacy_policy,
                 'privacy_policy_content' => $privacy_policy_content,
+                'user_status' => $user['status'],
+                'admin' => $this->db->query("select * from `ea_users` where `id_assessment_center` = $ac->id and `id_roles` = 1")->row_array()['email'],
             ];
         } catch (Exception $exc) {
             $view['exceptions'][] = $exc;
@@ -429,13 +431,13 @@ class Appointments extends CI_Controller {
             }
 
             $appointment = $_POST['post_data']['appointment'];
-            /*$customer = $_POST['post_data']['customer'];
+            /* $customer = $_POST['post_data']['customer'];
 
-            if ($this->customers_model->exists($customer)) {
-                $customer['id'] = $this->customers_model->find_record_id($customer);
-            }
+              if ($this->customers_model->exists($customer)) {
+              $customer['id'] = $this->customers_model->find_record_id($customer);
+              }
 
-            $customer_id = $this->customers_model->add($customer);*/
+              $customer_id = $this->customers_model->add($customer); */
             $this->load->library('session');
             $customer_id = $this->session->userdata['user_id'];
             $customer = $this->customers_model->get_row($customer_id);

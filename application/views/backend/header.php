@@ -27,7 +27,7 @@
             var availableLanguages = <?= json_encode($this->config->item('available_languages')) ?>;
             var EALang = <?= json_encode($this->lang->language) ?>;
         </script>
-        
+
         <script type="text/javascript">
             function iframe_resize() {
                 var body = document.body,
@@ -62,57 +62,64 @@
                     </button>
                 </div>
 
-                <div id="header-menu" class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        <?php $hidden = ($privileges[PRIV_APPOINTMENTS]['view'] == TRUE) ? '' : 'hidden' ?>
-                        <?php $active = ($active_menu == PRIV_APPOINTMENTS) ? 'active' : '' ?>
-                        <li class="<?= $active . $hidden ?>">
-                            <a href="<?= site_url('backend') ?>" class="menu-item"
-                               title="<?= lang('manage_appointment_record_hint') ?>">
-                                   <?= lang('calendar') ?>
-                            </a>
-                        </li>
+                <?php
+                if ($user_status === '1') {
+                    ?>
 
-                        <?php $hidden = ($privileges[PRIV_CUSTOMERS]['view'] == TRUE) ? '' : 'hidden' ?>
-                        <?php $active = ($active_menu == PRIV_CUSTOMERS) ? 'active' : '' ?>
-                        <li class="<?= $active . $hidden ?>">
-                            <a href="<?= site_url('backend/customers') ?>" class="menu-item"
-                               title="<?= lang('manage_customers_hint') ?>">
-                                   <?= lang('customers') ?>
-                            </a>
-                        </li>
+                    <div id="header-menu" class="collapse navbar-collapse">
+                        <ul class="nav navbar-nav navbar-right">
+                            <?php $hidden = ($privileges[PRIV_APPOINTMENTS]['view'] == TRUE) ? '' : 'hidden' ?>
+                            <?php $active = ($active_menu == PRIV_APPOINTMENTS) ? 'active' : '' ?>
+                            <li class="<?= $active . $hidden ?>">
+                                <a href="<?= site_url('backend') ?>" class="menu-item"
+                                   title="<?= lang('manage_appointment_record_hint') ?>">
+                                       <?= lang('calendar') ?>
+                                </a>
+                            </li>
 
-                        <?php $hidden = ($privileges[PRIV_SERVICES]['view'] == TRUE) ? '' : 'hidden' ?>
-                        <?php $active = ($active_menu == PRIV_SERVICES) ? 'active' : '' ?>
-                        <li class="<?= $active . $hidden ?>">
-                            <a href="<?= site_url('backend/services') ?>" class="menu-item"
-                               title="<?= lang('manage_services_hint') ?>">
-                                   <?= lang('services') ?>
-                            </a>
-                        </li>
+                            <?php $hidden = ($privileges[PRIV_CUSTOMERS]['view'] == TRUE) ? '' : 'hidden' ?>
+                            <?php $active = ($active_menu == PRIV_CUSTOMERS) ? 'active' : '' ?>
+                            <li class="<?= $active . $hidden ?>">
+                                <a href="<?= site_url('backend/customers') ?>" class="menu-item"
+                                   title="<?= lang('manage_customers_hint') ?>">
+                                       <?= lang('customers') ?>
+                                </a>
+                            </li>
 
-                        <?php $hidden = ($privileges[PRIV_USERS]['view'] == TRUE) ? '' : 'hidden' ?>
-                        <?php $active = ($active_menu == PRIV_USERS) ? 'active' : '' ?>
-                        <li class="<?= $active . $hidden ?>">
-                            <a href="<?= site_url('backend/users') ?>" class="menu-item"
-                               title="<?= lang('manage_users_hint') ?>">
-                                   <?= lang('users') ?>
-                            </a>
-                        </li>
+                            <?php $hidden = ($privileges[PRIV_SERVICES]['view'] == TRUE) ? '' : 'hidden' ?>
+                            <?php $active = ($active_menu == PRIV_SERVICES) ? 'active' : '' ?>
+                            <li class="<?= $active . $hidden ?>">
+                                <a href="<?= site_url('backend/services') ?>" class="menu-item"
+                                   title="<?= lang('manage_services_hint') ?>">
+                                       <?= lang('services') ?>
+                                </a>
+                            </li>
 
-                        <?php $hidden = ($privileges[PRIV_SYSTEM_SETTINGS]['view'] == TRUE || $privileges[PRIV_USER_SETTINGS]['view'] == TRUE) ? '' : 'hidden' ?>
-                        <?php $active = ($active_menu == PRIV_SYSTEM_SETTINGS) ? 'active' : '' ?>
-                        <li class="<?= $active . $hidden ?>">
-                            <a href="<?= site_url('backend/settings') ?>" class="menu-item" title="<?= lang('settings_hint') ?>"> <?= lang('settings') ?></a>
-                        </li>
-                        
-                        <?php $hidden = ($role_slug === 'provider') ? '' : 'hidden' ?>
-                        <?php $active = ($active_menu == PRIV_USER_PROFILE) ? 'active' : '' ?>
-                        <li class="<?= $active . $hidden ?>">
-                            <a href="<?= site_url('backend/profile') ?>" class="menu-item" title="<?= lang('settings_hint') ?>"> <?= lang('settings') ?></a>
-                        </li>
-                    </ul>
-                </div>
+                            <?php $hidden = ($privileges[PRIV_USERS]['view'] == TRUE) ? '' : 'hidden' ?>
+                            <?php $active = ($active_menu == PRIV_USERS) ? 'active' : '' ?>
+                            <li class="<?= $active . $hidden ?>">
+                                <a href="<?= site_url('backend/users') ?>" class="menu-item"
+                                   title="<?= lang('manage_users_hint') ?>">
+                                       <?= lang('users') ?>
+                                </a>
+                            </li>
+
+                            <?php $hidden = ($privileges[PRIV_SYSTEM_SETTINGS]['view'] == TRUE || $privileges[PRIV_USER_SETTINGS]['view'] == TRUE) ? '' : 'hidden' ?>
+                            <?php $active = ($active_menu == PRIV_SYSTEM_SETTINGS) ? 'active' : '' ?>
+                            <li class="<?= $active . $hidden ?>">
+                                <a href="<?= site_url('backend/settings') ?>" class="menu-item" title="<?= lang('settings_hint') ?>"> <?= lang('settings') ?></a>
+                            </li>
+
+                            <?php $hidden = ($role_slug === 'provider') ? '' : 'hidden' ?>
+                            <?php $active = ($active_menu == PRIV_USER_PROFILE) ? 'active' : '' ?>
+                            <li class="<?= $active . $hidden ?>">
+                                <a href="<?= site_url('backend/profile') ?>" class="menu-item" title="<?= lang('settings_hint') ?>"> <?= lang('settings') ?></a>
+                            </li>
+                        </ul>
+                    </div>
+                    <?php
+                }
+                ?>
             </div>
         </nav>
 
