@@ -68,9 +68,6 @@
                             <div id="step-3" class="book-step" title="<?= lang('step_three_title') ?>">
                                 <strong>3</strong>
                             </div>
-                            <div id="step-4" class="book-step" title="<?= lang('step_four_title') ?>">
-                                <strong>4</strong>
-                            </div>
                         </div>
                     </div>
 
@@ -269,7 +266,7 @@
                         </div>
                     </div>
 
-                    <div id="frame-footer">
+                     <div id="frame-footer" class="hidden">
                         Powered By
                         <a href="http://easyappointments.org" target="_blank">Easy!Appointments</a>
                         |
