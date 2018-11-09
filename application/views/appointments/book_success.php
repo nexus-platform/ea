@@ -27,17 +27,17 @@
                 </div>
                 <div class="col-xs-12 col-sm-10">
                     <?php
-                        /*echo '
+                        echo '
                             <h3>' . lang('appointment_registered') . '</h3>
                             <p>' . lang('appointment_details_was_sent_to_you') . '</p>
-                            <a href="' . site_url() . '" class="btn btn-success btn-large">
+                            <a href="' . site_url('appointments') . '" class="btn btn-success btn-large">
                                 <span class="glyphicon glyphicon-calendar"></span> ' .
                                 lang('go_to_booking_page') . '
                             </a>
-                        ';*/
-                        echo '
+                        ';
+                        /*echo '
                             <h3>' . lang('appointment_registered') . '</h3>
-                            <p>' . lang('appointment_details_was_sent_to_you') . '</p>';
+                            <p>' . lang('appointment_details_was_sent_to_you') . '</p>';*/
 
                         if ($this->config->item('google_sync_feature')) {
                             echo '

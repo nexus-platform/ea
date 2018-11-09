@@ -446,13 +446,16 @@ class Providers_Model extends CI_Model {
      *
      * @return array Returns an array with the providers data.
      */
-    public function get_available_providers($ac_id) {
+    public function get_available_providers() {
+        $this->load->library('session');
+        $acId = $this->session->userdata['ac']->id;
+
         // Get provider records from database.
         $this->db
                 ->select('ea_users.*')
                 ->from('ea_users')
                 ->join('ea_roles', 'ea_roles.id = ea_users.id_roles', 'inner')
-                ->where(['ea_users.id_assessment_center' => $ac_id, 'ea_roles.slug' => DB_SLUG_PROVIDER]);
+                ->where(['ea_users.id_assessment_center' => $acId, 'ea_roles.slug' => DB_SLUG_PROVIDER]);
 
         $providers = $this->db->get()->result_array();
 
@@ -467,10 +470,8 @@ class Providers_Model extends CI_Model {
             }
 
             // Settings
-            $this->load->library('session');
-            $ac_id = $this->session->userdata['ac']->id;
 
-            $provider['settings'] = $this->db->get_where('ea_user_settings', ['id_users' => $provider['id'], 'id_assessment_center' => $ac_id])->row_array();
+            $provider['settings'] = $this->db->get_where('ea_user_settings', ['id_users' => $provider['id'], 'id_assessment_center' => $acId])->row_array();
             unset($provider['settings']['username']);
             unset($provider['settings']['password']);
             unset($provider['settings']['salt']);

@@ -88,8 +88,8 @@ class Backend extends CI_Controller {
         $view['date_format'] = $this->settings_model->get_setting('date_format');
         $view['time_format'] = $this->settings_model->get_setting('time_format');
         $view['company_name'] = $this->settings_model->get_setting('company_name');
-        $view['available_providers'] = $this->providers_model->get_available_providers($this->session->userdata['ac']->id);
-        $view['available_services'] = $this->services_model->get_available_services($this->session->userdata['ac']->id);
+        $view['available_providers'] = $this->providers_model->get_available_providers();
+        $view['available_services'] = $this->services_model->get_available_services();
         $view['customers'] = $this->customers_model->get_batch('id_assessment_center = ' . $this->session->userdata['ac']->id);
         $view['calendar_view'] = $user['settings']['calendar_view'];
         $view['user_status'] = $this->session->userdata['user_status'];
@@ -146,8 +146,8 @@ class Backend extends CI_Controller {
         $view['date_format'] = $this->settings_model->get_setting('date_format');
         $view['time_format'] = $this->settings_model->get_setting('time_format');
         $view['customers'] = $this->customers_model->get_batch("id_assessment_center = " . $this->session->userdata['ac']->id);
-        $view['available_providers'] = $this->providers_model->get_available_providers($this->session->userdata['ac']->id);
-        $view['available_services'] = $this->services_model->get_available_services($this->session->userdata['ac']->id);
+        $view['available_providers'] = $this->providers_model->get_available_providers();
+        $view['available_services'] = $this->services_model->get_available_services();
         $view['user_status'] = $this->session->userdata['user_status'];
 
         if ($this->session->userdata('role_slug') === DB_SLUG_SECRETARY) {

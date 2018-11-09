@@ -85,8 +85,8 @@ class Appointments extends CI_Controller {
         $this->load->model('settings_model');
 
         try {
-            $available_services = $this->services_model->get_available_services($ac->id);
-            $available_providers = $this->providers_model->get_available_providers($ac->id);
+            $available_services = $this->services_model->get_available_services();
+            $available_providers = $this->providers_model->get_available_providers();
             $company_name = $ac->name;
             $date_format = $this->settings_model->get_setting('date_format');
             $time_format = $this->settings_model->get_setting('time_format');
@@ -900,8 +900,7 @@ class Appointments extends CI_Controller {
     protected function _search_providers_by_service($service_id) {
         $this->load->model('providers_model');
         $this->load->library('session');
-        $acId = $this->session->userdata['ac']->id;
-        $available_providers = $this->providers_model->get_available_providers($acId);
+        $available_providers = $this->providers_model->get_available_providers();
         $provider_list = array();
 
         foreach ($available_providers as $provider) {
