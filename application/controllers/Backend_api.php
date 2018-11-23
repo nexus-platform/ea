@@ -1431,7 +1431,7 @@ class Backend_api extends CI_Controller {
             $email = new Email2($this, $this->config->config);
             $invitation = json_decode($this->input->post('invitation'), TRUE);
             $this->load->library('session');
-            if ($this->db->get_where('ea_users', ['email' => $invitation['email'], 'id_assessment_center' => $this->session->userdata['ac']->id])->num_rows() > 0) {
+            if ($this->db->get_where('ea_users', ['email' => $invitation['email'], 'id_assessment_center' => $this->session->userdata['ac']->id, 'id_roles' => 2])->num_rows() > 0) {
                 throw new Exception('This email address is already registered.');
             }
             $this->load->helper('static_helper');

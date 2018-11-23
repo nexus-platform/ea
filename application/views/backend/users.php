@@ -99,8 +99,8 @@
 
                     <div class="switch-view pull-right">
                         <strong><?= lang('current_view') ?></strong>
-                        <div class="display-details current"><?= lang('details') ?></div>
-                        <div class="display-working-plan"><?= lang('working_plan') ?></div>
+                        <div onclick="update_height(250)" class="display-details current"><?= lang('details') ?></div>
+                        <div onclick="update_height(250)" class="display-working-plan"><?= lang('working_plan') ?></div>
                     </div>
 
                     <?php

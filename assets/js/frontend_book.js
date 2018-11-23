@@ -229,16 +229,17 @@ window.FrontendBook = window.FrontendBook || {};
             var service = getServiceById(currServiceId);
 
             // Add the "Any Provider" entry.
-            if (service.availabilities_type === 'flexible') {
+            if (service && service.availabilities_type === 'flexible') {
                 if ($('#select-provider option').length >= 1) {
                     $('#select-provider').append(new Option('- ' + EALang.any_provider + ' -', 'any-provider'));
                 }
             }
 
-            FrontendBookApi.getUnavailableDates($('#select-provider').val(), $(this).val(),
-                    $('#select-date').datepicker('getDate').toString('yyyy-MM-dd'));
+            FrontendBookApi.getUnavailableDates($('#select-provider').val(), $(this).val(), $('#select-date').datepicker('getDate').toString('yyyy-MM-dd'));
             FrontendBook.updateConfirmFrame();
-            _updateServiceDescription(service, $('#service-description'));
+            if (service) {
+                _updateServiceDescription(service, $('#service-description'));
+            }
         });
 
         /**

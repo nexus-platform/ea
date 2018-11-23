@@ -41,6 +41,16 @@
                     window.parent.postMessage({height: height, width: width}, "*");
                 }
             }
+
+            function update_height(delay) {
+                setTimeout(function () {
+                    var height = document.body.scrollHeight;
+                    var width = document.body.scrollWidth;
+                    if (window.parent.postMessage) {
+                        window.parent.postMessage({height: height, width: width}, "*");
+                    }
+                }, delay);
+            }
         </script>
     </head>
 

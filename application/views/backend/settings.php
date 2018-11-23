@@ -33,22 +33,22 @@
     <ul class="nav nav-tabs" role="tablist">
         <?php if ($privileges[PRIV_SYSTEM_SETTINGS]['view'] == TRUE): ?>
             <li role="presentation" class="active">
-                <a href="#general" aria-controls="general" role="tab" data-toggle="tab"><?= lang('general') ?></a>
+                <a href="#general" onclick="update_height(250)" aria-controls="general" role="tab" data-toggle="tab"><?= lang('general') ?></a>
             </li>
         <?php endif ?>
         <?php if ($privileges[PRIV_SYSTEM_SETTINGS]['view'] == TRUE): ?>
             <li role="presentation">
-                <a href="#business-logic" aria-controls="business-logic" role="tab" data-toggle="tab"><?= lang('business_logic') ?></a>
+                <a href="#business-logic" onclick="update_height(250)" aria-controls="business-logic" role="tab" data-toggle="tab"><?= lang('business_logic') ?></a>
             </li>
         <?php endif ?>
         <?php if ($privileges[PRIV_SYSTEM_SETTINGS]['view'] == TRUE): ?>
             <li role="presentation">
-                <a href="#legal-contents" aria-controls="legal-contents" role="tab" data-toggle="tab"><?= lang('legal_contents') ?></a>
+                <a href="#legal-contents" onclick="update_height(250)" aria-controls="legal-contents" role="tab" data-toggle="tab"><?= lang('legal_contents') ?></a>
             </li>
         <?php endif ?>
         <?php if ($privileges[PRIV_USER_SETTINGS]['view'] == TRUE): ?>
             <li role="presentation">
-                <a href="#current-user" aria-controls="current-user" role="tab" data-toggle="tab"><?= lang('current_user') ?></a>
+                <a href="#current-user" onclick="update_height(250)" aria-controls="current-user" role="tab" data-toggle="tab"><?= lang('current_user') ?></a>
             </li>
         <?php endif ?>
         <!--<li role="presentation">
