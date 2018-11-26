@@ -155,7 +155,9 @@ class Settings_Model extends CI_Model {
                 ->select('ea_settings.*')
                 ->from('ea_settings')
                 ->where(['ea_settings.id_assessment_center' => $ac_id]);
-        return $this->db->get()->result_array();
+        $res = $this->db->get()->result_array();
+        $res[] = ['name' => 'automatic_booking', 'value' => $this->db->select('automatic_booking')->from('assessment_center')->where(['id' => $ac_id])->get()->row()->automatic_booking];
+        return $res;
     }
 
 }

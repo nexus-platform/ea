@@ -1007,21 +1007,21 @@ class Backend_api extends CI_Controller {
             if ($this->privileges[PRIV_USERS]['view'] == FALSE && $this->session->userdata['role_slug'] !== 'provider') {
                 throw new Exception('You do not have the required privileges for this task.');
             }
-            
+
 
             $this->load->model('providers_model');
             $key = $this->db->escape_str($this->input->post('key'));
-            
+
             if ($this->session->userdata['role_slug'] !== 'provider') {
                 $where = 'id_assessment_center = ' . $this->session->userdata['ac']->id . ' and (first_name LIKE "%' . $key . '%" OR last_name LIKE "%' . $key . '%" ' .
-                    'OR email LIKE "%' . $key . '%" OR mobile_number LIKE "%' . $key . '%" ' .
-                    'OR phone_number LIKE "%' . $key . '%" OR address LIKE "%' . $key . '%" ' .
-                    'OR city LIKE "%' . $key . '%" OR state LIKE "%' . $key . '%" ' .
-                    'OR zip_code LIKE "%' . $key . '%" OR notes LIKE "%' . $key . '%")';
+                        'OR email LIKE "%' . $key . '%" OR mobile_number LIKE "%' . $key . '%" ' .
+                        'OR phone_number LIKE "%' . $key . '%" OR address LIKE "%' . $key . '%" ' .
+                        'OR city LIKE "%' . $key . '%" OR state LIKE "%' . $key . '%" ' .
+                        'OR zip_code LIKE "%' . $key . '%" OR notes LIKE "%' . $key . '%")';
             } else {
                 $where = 'id_assessment_center = ' . $this->session->userdata['ac']->id . ' and id = ' . $this->session->userdata['user_id'];
             }
-            
+
             $providers = $this->providers_model->get_batch($where);
             $this->output
                     ->set_content_type('application/json')
@@ -1074,7 +1074,7 @@ class Backend_api extends CI_Controller {
                     ->set_output(json_encode(['exceptions' => [exceptionToJavaScript($exc)]]));
         }
     }
-    
+
     /**
      * [AJAX] Save a provider profile data.
      *
@@ -1261,20 +1261,41 @@ class Backend_api extends CI_Controller {
                 $this->settings_model->save_settings($settings);
                 $name = null;
                 $link = null;
+                $automaticBooking = null;
                 foreach ($settings as $setting) {
                     if ($setting['name'] === 'company_name') {
                         $name = $setting['value'];
-                    } elseif ($setting['name'] === 'company_link') {
+                    } else if ($setting['name'] === 'company_link') {
                         $link = $setting['value'];
+                    } else if ($setting['name'] === 'automatic_booking') {
+                        $automaticBooking = $setting['value'];
                     }
-                    if ($name && $link) {
+                    if ($name && $link && $automaticBooking) {
                         break;
                     }
                 }
+
+                $slug = strtolower(trim($link));
+                $slugChars = str_split($slug);
+                $slugLength = count($slugChars);
+
+                for ($i = 0; $i < $slugLength; $i++) {
+                    $charAscii = ord($slugChars[$i]);
+                    if (!($charAscii === 45 || ($charAscii >= 48 && $charAscii <= 57) || ($charAscii >= 97 && $charAscii <= 122))) {
+                        throw new Exception('Institute ID cannot contain whitespaces or special characters.');
+                    }
+                }
+                
                 $this->load->library('session');
                 $ac_id = $this->session->userdata['ac']->id;
-
-                $this->db->simple_query("update `assessment_center` set `name` = '$name', `url` = '$link' where `id` = $ac_id");
+                
+                $existingAC = $this->db->query("select `name`, `url` from `assessment_center` where `id` <> $ac_id and (`name` = '$name' or `url` = '$link')")->row();
+                
+                if ($existingAC) {
+                    throw new Exception('This ' . ($existingAC->name === $name ? 'name' : 'link') . ' is already assigned to another institute.' );
+                }
+                
+                $this->db->simple_query("update `assessment_center` set `name` = '$name', `url` = '$link', `automatic_booking` = $automaticBooking where `id` = $ac_id");
             } else {
                 if ($this->input->post('type') == SETTINGS_USER) {
                     if ($this->privileges[PRIV_USER_SETTINGS]['edit'] == FALSE) {

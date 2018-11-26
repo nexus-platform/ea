@@ -100,6 +100,18 @@
                                     <?= lang('company_link_hint') ?>
                                 </span>
                             </div>
+                            
+                            <div class="form-group">
+                                <label for="company-automatic-booking">Automatic booking</label>
+                                <select data-field="automatic_booking" id="company-automatic-booking" class="form-control required">
+                                    <option></option>
+                                    <option value="0">Disabled</option>
+                                    <option value="1">Enabled</option>
+                                </select>
+                                <span class="help-block">
+                                    If enabled, students will be available to use the booking interface right after submitting the Assessment Form.
+                                </span>
+                            </div>
                         </div>
                         <div class="col-xs-12 col-sm-6">
                             <div class="form-group">

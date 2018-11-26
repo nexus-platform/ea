@@ -112,7 +112,6 @@ window.BackendSettings = window.BackendSettings || {};
         $('#state').val(GlobalVariables.settings.user.state);
         $('#zip-code').val(GlobalVariables.settings.user.zip_code);
         $('#notes').val(GlobalVariables.settings.user.notes);
-
         $('#username').val(GlobalVariables.settings.user.settings.username);
         $('#password, #retype-password').val('');
         $('#calendar-view').val(GlobalVariables.settings.user.settings.calendar_view);
