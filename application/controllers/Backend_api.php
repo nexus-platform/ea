@@ -335,6 +335,25 @@ class Backend_api extends CI_Controller {
                 if ($send_provider == TRUE) {
                     $email->sendAppointmentDetails($appointment, $provider, $service, $customer, $company_settings, $provider_title, $provider_message, $provider_link, new Email($provider['email']), new Text($ics_stream));
                 }
+                
+                $title = 'New appointment scheduled';
+                $dateTime = new DateTime($appointment['start_datetime']);
+                $headline = date('Y/m/d H:i:s', time());
+                $this->load->model('notifications_model');
+                
+                //Notifying student
+                $subtitle = 'You have a booking with ' . $provider['first_name'] . ' ' . $provider['last_name'] . ' from ' . $company_settings['company_name'] . ' for ' . $dateTime->format('Y-m-d') . ' at ' . $dateTime->format('H:i');
+                $this->notifications_model->add($customer['id'], $title, $subtitle, $headline, 1, 2);
+                
+                //Notifying NA
+                $subtitle = 'You have a booking with ' . $customer['first_name'] . ' ' . $customer['last_name'] . ' from ' . $company_settings['company_name'] . ' for ' . $dateTime->format('Y-m-d') . ' at ' . $dateTime->format('H:i');
+                $this->notifications_model->add($provider['id'], $title, $subtitle, $headline, 1, 1);
+                
+                //Notifying AC
+                $this->load->library('session');
+                $acManager = $this->db->get_where('assessment_center_user', ['ac_id' => $this->session->userdata['ac']->id, 'is_admin' => 1])->row();
+                $subtitle = $customer['first_name'] . ' ' . $customer['last_name'] . ' has a new appointment with ' . $provider['first_name'] . ' ' . $provider['last_name'] . ' for ' . $dateTime->format('Y-m-d') . ' at ' . $dateTime->format('H:i');
+                $this->notifications_model->add($acManager->user_id, $title, $subtitle, $headline, 1, 1);
             } catch (Exception $exc) {
                 $warnings[] = exceptionToJavaScript($exc);
             }

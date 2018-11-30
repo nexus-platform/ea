@@ -45,6 +45,13 @@
      * @param {Object} workingPlan Contains the working hours and breaks for each day of the week.
      */
     WorkingPlan.prototype.setup = function (workingPlan) {
+        $('#monday').prop('checked', false);
+        $('#tuesday').prop('checked', false);
+        $('#wednesday').prop('checked', false);
+        $('#thursday').prop('checked', false);
+        $('#friday').prop('checked', false);
+        $('#saturday').prop('checked', false);
+        $('#sunday').prop('checked', false);
         $.each(workingPlan, function (index, workingDay) {
             if (workingDay != null) {
                 $('#' + index).prop('checked', true);
