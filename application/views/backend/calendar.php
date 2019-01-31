@@ -16,6 +16,7 @@
         'csrfToken': <?= json_encode($this->security->get_csrf_hash()) ?>,
         'availableProviders': <?= json_encode($available_providers) ?>,
         'availableServices': <?= json_encode($available_services) ?>,
+        'availableACs': <?= json_encode($available_acs) ?>,
         'baseUrl': <?= json_encode($base_url) ?>,
         'bookAdvanceTimeout': <?= $book_advance_timeout ?>,
         'dateFormat': <?= json_encode($date_format) ?>,
@@ -24,6 +25,7 @@
         'customers': <?= json_encode($customers) ?>,
         'secretaryProviders': <?= json_encode($secretary_providers) ?>,
         'calendarView': <?= json_encode($calendar_view) ?>,
+        'currentACId': <?= $current_ac_id ?>,
         'user': {
             'id': <?= $user_id ?>,
             'email': <?= json_encode($user_email) ?>,
@@ -56,11 +58,24 @@ if ($user_status === '0') {
     <div id="calendar-page" class="container-fluid">
         <div id="calendar-toolbar">
             <div id="calendar-filter" class="form-inline col-xs-12 col-sm-5">
-                <div class="form-group">
-                    <label for="select-filter-item"><?= lang('display_calendar') ?></label>
+                
+                <div class="form-group <?= $user_role === 'provider' ? 'hidden' : '' ?>">
+                    <label for="select-filter-item">Calendar</label>
                     <select id="select-filter-item" class="form-control" title="<?= lang('select_filter_item_hint') ?>">
                     </select>
                 </div>
+                
+                <?php
+                if ($user_role === 'provider') {
+                    ?>
+                <div class="form-group">
+                    <label for="select-filter-ac">Centre</label>
+                    <select id="select-filter-ac" class="form-control" title="Select an Assessment Centre">
+                    </select>
+                </div>
+                <?php
+                }
+                ?>
             </div>
 
             <div id="calendar-actions" class="col-xs-12 col-sm-7">

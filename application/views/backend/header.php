@@ -55,7 +55,7 @@
     </head>
 
     <body>
-        <nav id="header" class="navbar">
+        <nav id="header" class="navbar hidden">
             <div class="container-fluid">
                 <div class="navbar-header">
                     <div id="header-logo" class="navbar-brand">

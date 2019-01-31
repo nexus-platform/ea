@@ -170,8 +170,10 @@ class Backend_api extends CI_Controller {
 
             if ($this->input->post('filter_type') == FILTER_TYPE_PROVIDER) {
                 $where_id = 'id_users_provider';
-            } else {
+            } else if ($this->input->post('filter_type') == FILTER_TYPE_SERVICE) {
                 $where_id = 'id_services';
+            } else {
+                $where_id = 'id_assessment_center';
             }
 
             // Get appointments
@@ -182,11 +184,26 @@ class Backend_api extends CI_Controller {
             $this->load->library('session');
             $ac_id = $this->session->userdata['ac']->id;
 
-            $where_clause = $where_id . ' = ' . $record_id . '
+            if ($where_id === 'id_users_provider') {
+                $where_clause = $where_id . ' = ' . $record_id . '
                 AND ((start_datetime > ' . $start_date . ' AND start_datetime < ' . $end_date . ') 
                 or (end_datetime > ' . $start_date . ' AND end_datetime < ' . $end_date . ') 
                 or (start_datetime <= ' . $start_date . ' AND end_datetime >= ' . $end_date . ')) 
                 AND is_unavailable = 0 AND id_services in (SELECT id FROM ea_services where id_assessment_center = ' . $ac_id . ')';
+            } else if ($where_id === 'id_services') {
+                $where_clause = $where_id . ' = ' . $record_id . '
+                AND ((start_datetime > ' . $start_date . ' AND start_datetime < ' . $end_date . ') 
+                or (end_datetime > ' . $start_date . ' AND end_datetime < ' . $end_date . ') 
+                or (start_datetime <= ' . $start_date . ' AND end_datetime >= ' . $end_date . ')) 
+                AND is_unavailable = 0';
+            } else {
+                $where_clause = 'id_users_provider = ' . $this->session->userdata['user_id'] . '
+                AND ((start_datetime > ' . $start_date . ' AND start_datetime < ' . $end_date . ') 
+                or (end_datetime > ' . $start_date . ' AND end_datetime < ' . $end_date . ') 
+                or (start_datetime <= ' . $start_date . ' AND end_datetime >= ' . $end_date . ')) 
+                AND is_unavailable = 0';
+                $where_clause .= ($record_id === "'0'" ? '' : ' AND id_services in (SELECT id FROM ea_services where id_assessment_center = ' . $record_id . ')');
+            }
 
             $response['appointments'] = $this->appointments_model->get_batch($where_clause);
 
@@ -202,9 +219,27 @@ class Backend_api extends CI_Controller {
                     AND ((start_datetime > ' . $start_date . ' AND start_datetime < ' . $end_date . ') 
                     or (end_datetime > ' . $start_date . ' AND end_datetime < ' . $end_date . ') 
                     or (start_datetime <= ' . $start_date . ' AND end_datetime >= ' . $end_date . ')) 
-                    AND is_unavailable = 1
-                ';
-
+                    AND is_unavailable = 1';
+                $response['available_providers'] = $this->providers_model->get_available_providers();
+                $response['available_services'] = $this->services_model->get_available_services();
+                $response['unavailables'] = $this->appointments_model->get_batch($where_clause);
+            }
+            
+            else if ($this->input->post('filter_type') == FILTER_TYPE_AC) {
+                $where_clause = 'id_users_provider = ' . $this->session->userdata['user_id'] . '
+                AND ((start_datetime > ' . $start_date . ' AND start_datetime < ' . $end_date . ') 
+                or (end_datetime > ' . $start_date . ' AND end_datetime < ' . $end_date . ') 
+                or (start_datetime <= ' . $start_date . ' AND end_datetime >= ' . $end_date . ')) 
+                AND is_unavailable = 0';
+                
+                $response['available_providers'] = $this->providers_model->get_available_providers(str_replace("'", "", $record_id));
+                
+                if ($record_id !== "'0'") {
+                    $response['available_services'] = $this->services_model->get_available_services(str_replace("'", "", $record_id));
+                    $where_clause .= ' AND id_services in (SELECT id FROM ea_services where id_assessment_center = ' . $record_id . ')';
+                } else {
+                    $response['available_services'] = [];
+                }
                 $response['unavailables'] = $this->appointments_model->get_batch($where_clause);
             }
 
@@ -335,20 +370,20 @@ class Backend_api extends CI_Controller {
                 if ($send_provider == TRUE) {
                     $email->sendAppointmentDetails($appointment, $provider, $service, $customer, $company_settings, $provider_title, $provider_message, $provider_link, new Email($provider['email']), new Text($ics_stream));
                 }
-                
+
                 $title = 'New appointment scheduled';
                 $dateTime = new DateTime($appointment['start_datetime']);
                 $headline = date('Y/m/d H:i:s', time());
                 $this->load->model('notifications_model');
-                
+
                 //Notifying student
                 $subtitle = 'You have a booking with ' . $provider['first_name'] . ' ' . $provider['last_name'] . ' from ' . $company_settings['company_name'] . ' for ' . $dateTime->format('Y-m-d') . ' at ' . $dateTime->format('H:i');
                 $this->notifications_model->add($customer['id'], $title, $subtitle, $headline, 1, 2);
-                
+
                 //Notifying NA
                 $subtitle = 'You have a booking with ' . $customer['first_name'] . ' ' . $customer['last_name'] . ' from ' . $company_settings['company_name'] . ' for ' . $dateTime->format('Y-m-d') . ' at ' . $dateTime->format('H:i');
                 $this->notifications_model->add($provider['id'], $title, $subtitle, $headline, 1, 1);
-                
+
                 //Notifying AC
                 $this->load->library('session');
                 $acManager = $this->db->get_where('assessment_center_user', ['ac_id' => $this->session->userdata['ac']->id, 'is_admin' => 1])->row();
@@ -1304,16 +1339,16 @@ class Backend_api extends CI_Controller {
                         throw new Exception('Institute ID cannot contain whitespaces or special characters.');
                     }
                 }
-                
+
                 $this->load->library('session');
                 $ac_id = $this->session->userdata['ac']->id;
-                
+
                 $existingAC = $this->db->query("select `name`, `url` from `assessment_center` where `id` <> $ac_id and (`name` = '$name' or `url` = '$link')")->row();
-                
+
                 if ($existingAC) {
-                    throw new Exception('This ' . ($existingAC->name === $name ? 'name' : 'link') . ' is already assigned to another institute.' );
+                    throw new Exception('This ' . ($existingAC->name === $name ? 'name' : 'link') . ' is already assigned to another institute.');
                 }
-                
+
                 $this->db->simple_query("update `assessment_center` set `name` = '$name', `url` = '$link', `automatic_booking` = $automaticBooking where `id` = $ac_id");
             } else {
                 if ($this->input->post('type') == SETTINGS_USER) {

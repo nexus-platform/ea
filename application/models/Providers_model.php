@@ -446,35 +446,85 @@ class Providers_Model extends CI_Model {
      *
      * @return array Returns an array with the providers data.
      */
-    public function get_available_providers() {
-        $this->load->library('session');
-        $acId = $this->session->userdata['ac']->id;
+    public function get_available_providers($acId = null) {
+
+        if ($acId === null) {
+            $this->load->library('session');
+            $acId = $this->session->userdata['ac']->id;
+        }
+
+        $providers = [];
 
         // Get provider records from database.
-        $this->db
-                ->select('ea_users.*')
-                ->from('ea_users')
-                ->join('ea_roles', 'ea_roles.id = ea_users.id_roles', 'inner')
-                ->where(['ea_users.id_assessment_center' => $acId, 'ea_roles.slug' => DB_SLUG_PROVIDER]);
+        if ($acId == '0') {
+            $this->db
+                    ->select('ea_users.*')
+                    ->from('ea_users')
+                    ->join('ea_roles', 'ea_roles.id = ea_users.id_roles', 'inner')
+                    ->where(['ea_users.id' => $this->session->userdata['user_id'], 'ea_roles.slug' => DB_SLUG_PROVIDER]);
+            $providers = $this->db->get()->result_array();
+            
+            // Include each provider services and settings.
+            $combinedWorkingPlan = json_decode('{"sunday":null,"monday":null,"tuesday":null,"wednesday":null,"thursday":null,"friday":null,"saturday":null}', true);
+            //$combinedWorkingPlan = ["sunday" => null,"monday" => null,"tuesday" => null,"wednesday" => null,"thursday" => null,"friday" => null,"saturday" => null];
+            foreach ($providers as &$provider) {
+                // Services
+                /*$this->db
+                    ->select('ea_services_providers.*')
+                    ->from('ea_services_providers')
+                    ->join('ea_services', 'ea_services.id = ea_services_providers.id_services', 'inner')
+                    ->where(['ea_services.id_assessment_center' => $provider['id_assessment_center']]);
+                $services = $this->db->get()->result_array();
 
-        $providers = $this->db->get()->result_array();
+                $provider['services'] = [];
+                foreach ($services as $service) {
+                    $provider['services'][] = $service['id_services'];
+                }*/
 
-        // Include each provider services and settings.
-        foreach ($providers as &$provider) {
-            // Services
-            $services = $this->db->get_where('ea_services_providers', ['id_users' => $provider['id']])->result_array();
+                // Settings
 
-            $provider['services'] = [];
-            foreach ($services as $service) {
-                $provider['services'][] = $service['id_services'];
+                $provider['settings'] = $this->db->get_where('ea_user_settings', ['id_users' => $provider['id'], 'id_assessment_center' => $provider['id_assessment_center']])->row_array();
+                $wpAux = json_decode($provider['settings']['working_plan'], true);
+                foreach ($wpAux as $wpDay => $wpContent) {
+                    if ($wpContent) {
+                        $combinedWorkingPlan[$wpDay] = $wpContent;
+                    }
+                }
+                unset($provider['settings']['username']);
+                unset($provider['settings']['password']);
+                unset($provider['settings']['salt']);
             }
+            $count = count($providers) - 1;
+            for ($i = $count; $i > 0; $i --) {
+                unset($providers[$i]);
+            }
+            $providers[0]['settings']['working_plan'] = json_encode($combinedWorkingPlan);
+        } else {
+            $this->db
+                    ->select('ea_users.*')
+                    ->from('ea_users')
+                    ->join('ea_roles', 'ea_roles.id = ea_users.id_roles', 'inner')
+                    ->where(['ea_users.id_assessment_center' => $acId, 'ea_roles.slug' => DB_SLUG_PROVIDER]);
 
-            // Settings
+            $providers = $this->db->get()->result_array();
+            
+            // Include each provider services and settings.
+            foreach ($providers as &$provider) {
+                // Services
+                $services = $this->db->get_where('ea_services_providers', ['id_users' => $provider['id']])->result_array();
 
-            $provider['settings'] = $this->db->get_where('ea_user_settings', ['id_users' => $provider['id'], 'id_assessment_center' => $acId])->row_array();
-            unset($provider['settings']['username']);
-            unset($provider['settings']['password']);
-            unset($provider['settings']['salt']);
+                $provider['services'] = [];
+                foreach ($services as $service) {
+                    $provider['services'][] = $service['id_services'];
+                }
+
+                // Settings
+
+                $provider['settings'] = $this->db->get_where('ea_user_settings', ['id_users' => $provider['id'], 'id_assessment_center' => $acId])->row_array();
+                unset($provider['settings']['username']);
+                unset($provider['settings']['password']);
+                unset($provider['settings']['salt']);
+            }
         }
 
         // Return provider records.
@@ -556,10 +606,10 @@ class Providers_Model extends CI_Model {
                     if ($newPlan) {
                         for ($i = 0; $i < count($otherWorkingPlans); $i++) {
                             //if ($otherWorkingPlans[$i]['working_plan']) {
-                                $workingPlanAux = json_decode($otherWorkingPlans[$i]['working_plan'], true);
-                                $workingPlanAux[$newDay] = null;
-                                $workingPlanAux = json_encode($workingPlanAux);
-                                $otherWorkingPlans[$i]['working_plan'] = $workingPlanAux;
+                            $workingPlanAux = json_decode($otherWorkingPlans[$i]['working_plan'], true);
+                            $workingPlanAux[$newDay] = null;
+                            $workingPlanAux = json_encode($workingPlanAux);
+                            $otherWorkingPlans[$i]['working_plan'] = $workingPlanAux;
                             //}
                         }
                     }
@@ -594,7 +644,10 @@ class Providers_Model extends CI_Model {
         }
 
         // Save provider services in the database (delete old records and add new).
-        $this->db->delete('ea_services_providers', ['id_users' => $provider_id]);
+        //$this->db->delete('ea_services_providers', ['id_users' => $provider_id]);
+        $this->load->library('session');
+        $acId = $this->session->userdata['ac']->id;
+        $this->db->query("delete from `ea_services_providers` where `id_users` = $provider_id and `id_services` in (select `id` from `ea_services` where `id_assessment_center` = $acId)");
         foreach ($services as $service_id) {
             $service_provider = [
                 'id_users' => $provider_id,

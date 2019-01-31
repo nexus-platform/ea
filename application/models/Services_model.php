@@ -285,10 +285,11 @@ class Services_Model extends CI_Model {
      *
      * @return array Returns an object array with all the database services.
      */
-    public function get_available_services() {
-        $this->load->library('session');
-        $acId = $this->session->userdata['ac']->id;
-        
+    public function get_available_services($acId = null) {
+        if (!$acId) {
+            $this->load->library('session');
+            $acId = $this->session->userdata['ac']->id;
+        }
         $this->db->distinct();
         return $this->db
                         ->select('ea_services.*, ea_service_categories.name AS category_name, ea_service_categories.id AS category_id')

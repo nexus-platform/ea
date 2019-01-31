@@ -31,4 +31,19 @@ class Companies_model extends CI_Model {
         return $this->db->get_where('assessment_center', ['url' => $slug])->row();
     }
 
+    public function get_available_acs() {
+        $this->load->library('session');
+        $id = $this->session->userdata['user_id'];
+        $res = $this->db
+                        ->select('assessment_center.id, assessment_center.name')
+                        ->distinct()
+                        ->order_by('assessment_center.name')
+                        ->from('assessment_center')
+                        ->join('assessment_center_user', 'assessment_center.id = assessment_center_user.ac_id', 'inner')
+                        ->where('assessment_center_user.user_id', $id)
+                        ->get()->result_array();
+
+        return $res;
+    }
+
 }

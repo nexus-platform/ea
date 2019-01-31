@@ -52,6 +52,7 @@ define('DB_SLUG_SECRETARY', 'secretary');
 
 define('FILTER_TYPE_PROVIDER', 'provider');
 define('FILTER_TYPE_SERVICE', 'service');
+define('FILTER_TYPE_AC', 'ac');
 
 define('AJAX_SUCCESS', 'SUCCESS');
 define('AJAX_FAILURE', 'FAILURE');

@@ -48,16 +48,14 @@ class Backend extends CI_Controller {
     public function index($appointment_hash = '') {
         $this->session->set_userdata('dest_url', site_url('backend'));
         $this->load->model('user_model');
-        $userid = $this->session->userdata['user_id'];
+        $this->load->model('companies_model');
+        $this->load->library('session');
         $jwt = $this->input->get('jwt');
         $payload = jwt_helper::decode($jwt);
         
         if ($payload) {
-            $this->load->model('companies_model');
-            $this->load->library('session');
             $this->session->set_userdata('ac', $this->companies_model->find($this->input->get('ac')));
             $user = $this->user_model->get_settings($payload->user_id);
-
             if ($user) {
                 $this->load->model('roles_model');
                 $this->session->set_userdata('user_id', $user['id']);
@@ -93,6 +91,9 @@ class Backend extends CI_Controller {
         $view['customers'] = $this->customers_model->get_batch('id_assessment_center = ' . $this->session->userdata['ac']->id);
         $view['calendar_view'] = $user['settings']['calendar_view'];
         $view['user_status'] = $this->session->userdata['user_status'];
+        $view['user_role'] = $this->session->userdata['role_slug'];
+        $view['available_acs'] = $this->companies_model->get_available_acs();
+        $view['current_ac_id'] = $this->session->userdata['ac']->id;
 
         $view['admin'] = $this->db->query("select * from `ea_users` where `id_assessment_center` = " . $this->session->userdata['ac']->id . " and `id_roles` = 1")->row_array()['email'];
         $this->set_user_data($view);
