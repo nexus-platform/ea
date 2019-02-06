@@ -448,8 +448,9 @@ class Providers_Model extends CI_Model {
      */
     public function get_available_providers($acId = null) {
 
+
+        $this->load->library('session');
         if ($acId === null) {
-            $this->load->library('session');
             $acId = $this->session->userdata['ac']->id;
         }
 
@@ -463,23 +464,23 @@ class Providers_Model extends CI_Model {
                     ->join('ea_roles', 'ea_roles.id = ea_users.id_roles', 'inner')
                     ->where(['ea_users.id' => $this->session->userdata['user_id'], 'ea_roles.slug' => DB_SLUG_PROVIDER]);
             $providers = $this->db->get()->result_array();
-            
+
             // Include each provider services and settings.
             $combinedWorkingPlan = json_decode('{"sunday":null,"monday":null,"tuesday":null,"wednesday":null,"thursday":null,"friday":null,"saturday":null}', true);
             //$combinedWorkingPlan = ["sunday" => null,"monday" => null,"tuesday" => null,"wednesday" => null,"thursday" => null,"friday" => null,"saturday" => null];
             foreach ($providers as &$provider) {
                 // Services
-                /*$this->db
-                    ->select('ea_services_providers.*')
-                    ->from('ea_services_providers')
-                    ->join('ea_services', 'ea_services.id = ea_services_providers.id_services', 'inner')
-                    ->where(['ea_services.id_assessment_center' => $provider['id_assessment_center']]);
-                $services = $this->db->get()->result_array();
+                /* $this->db
+                  ->select('ea_services_providers.*')
+                  ->from('ea_services_providers')
+                  ->join('ea_services', 'ea_services.id = ea_services_providers.id_services', 'inner')
+                  ->where(['ea_services.id_assessment_center' => $provider['id_assessment_center']]);
+                  $services = $this->db->get()->result_array();
 
-                $provider['services'] = [];
-                foreach ($services as $service) {
-                    $provider['services'][] = $service['id_services'];
-                }*/
+                  $provider['services'] = [];
+                  foreach ($services as $service) {
+                  $provider['services'][] = $service['id_services'];
+                  } */
 
                 // Settings
 
@@ -504,14 +505,20 @@ class Providers_Model extends CI_Model {
                     ->select('ea_users.*')
                     ->from('ea_users')
                     ->join('ea_roles', 'ea_roles.id = ea_users.id_roles', 'inner')
-                    ->where(['ea_users.id_assessment_center' => $acId, 'ea_roles.slug' => DB_SLUG_PROVIDER]);
+                    ->where(['ea_users.id' => $this->session->userdata['user_id'], 'ea_users.id_assessment_center' => $acId, 'ea_roles.slug' => DB_SLUG_PROVIDER]);
 
             $providers = $this->db->get()->result_array();
-            
+
             // Include each provider services and settings.
             foreach ($providers as &$provider) {
                 // Services
-                $services = $this->db->get_where('ea_services_providers', ['id_users' => $provider['id']])->result_array();
+                //$services = $this->db->get_where('ea_services_providers', ['id_users' => $provider['id']])->result_array();
+                $this->db
+                        ->select('ea_services_providers.*')
+                        ->from('ea_services_providers')
+                        ->join('ea_services', 'ea_services.id = ea_services_providers.id_services', 'inner')
+                        ->where(['id_users' => $provider['id'], 'ea_services.id_assessment_center' => $provider['id_assessment_center']]);
+                $services = $this->db->get()->result_array();
 
                 $provider['services'] = [];
                 foreach ($services as $service) {

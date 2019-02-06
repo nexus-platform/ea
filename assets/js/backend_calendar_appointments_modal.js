@@ -139,7 +139,7 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
                 }
             } else {
                 $dialog.find('#select-service option[value="'
-                    + $('#select-filter-item').val() + '"]').prop('selected', true);
+                        + $('#select-filter-item').val() + '"]').prop('selected', true);
             }
 
             var serviceDuration = 0;
@@ -165,7 +165,7 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
 
             $dialog.find('#start-datetime').val(GeneralFunctions.formatDate(start, GlobalVariables.dateFormat, true));
             $dialog.find('#end-datetime').val(GeneralFunctions.formatDate(start.addMinutes(serviceDuration),
-                GlobalVariables.dateFormat, true));
+                    GlobalVariables.dateFormat, true));
 
             // Display modal form.
             $dialog.find('.modal-header h3').text(EALang.new_appointment_title);
@@ -186,7 +186,7 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
                 $('#filter-existing-customers').val('');
                 $.each(GlobalVariables.customers, function (index, c) {
                     $list.append('<div data-id="' + c.id + '">'
-                        + c.first_name + ' ' + c.last_name + '</div>');
+                            + c.first_name + ' ' + c.last_name + '</div>');
                 });
             } else {
                 $list.slideUp('slow');
@@ -243,13 +243,13 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
                     $list.empty();
                     $.each(response, function (index, c) {
                         $list.append('<div data-id="' + c.id + '">'
-                            + c.first_name + ' ' + c.last_name + '</div>');
+                                + c.first_name + ' ' + c.last_name + '</div>');
 
                         // Verify if this customer is on the old customer list.
                         var result = $.grep(GlobalVariables.customers,
-                            function (e) {
-                                return e.id == c.id;
-                            });
+                                function (e) {
+                                    return e.id == c.id;
+                                });
 
                         // Add it to the customer list.
                         if (result.length == 0) {
@@ -262,15 +262,15 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
                     $list.empty();
                     $.each(GlobalVariables.customers, function (index, c) {
                         if (c.first_name.toLowerCase().indexOf(key) != -1
-                            || c.last_name.toLowerCase().indexOf(key) != -1
-                            || c.email.toLowerCase().indexOf(key) != -1
-                            || c.phone_number.toLowerCase().indexOf(key) != -1
-                            || c.address.toLowerCase().indexOf(key) != -1
-                            || c.city.toLowerCase().indexOf(key) != -1
-                            || c.zip_code.toLowerCase().indexOf(key) != -1
-                            || c.notes.toLowerCase().indexOf(key) != -1) {
+                                || c.last_name.toLowerCase().indexOf(key) != -1
+                                || c.email.toLowerCase().indexOf(key) != -1
+                                || c.phone_number.toLowerCase().indexOf(key) != -1
+                                || c.address.toLowerCase().indexOf(key) != -1
+                                || c.city.toLowerCase().indexOf(key) != -1
+                                || c.zip_code.toLowerCase().indexOf(key) != -1
+                                || c.notes.toLowerCase().indexOf(key) != -1) {
                             $list.append('<div data-id="' + c.id + '">'
-                                + c.first_name + ' ' + c.last_name + '</div>');
+                                    + c.first_name + ' ' + c.last_name + '</div>');
                         }
                     });
                 }
@@ -310,8 +310,8 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
                     // If the current provider is able to provide the selected service, add him to the listbox.
                     if (serviceId == sid) {
                         var optionHtml = '<option value="' + provider.id + '">'
-                            + provider.first_name + ' ' + provider.last_name
-                            + '</option>';
+                                + provider.first_name + ' ' + provider.last_name
+                                + '</option>';
                         $('#select-provider').append(optionHtml);
                     }
                 });
@@ -323,7 +323,7 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
          */
         $('#new-customer').click(function () {
             $('#manage-appointment').find('#customer-id, #first-name, #last-name, #email, '
-                + '#phone-number, #address, #city, #zip-code, #customer-notes').val('');
+                    + '#phone-number, #address, #city, #zip-code, #customer-notes').val('');
         });
     }
 
@@ -342,7 +342,7 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
 
         // Prepare service and provider select boxes.
         $dialog.find('#select-service').val(
-            $dialog.find('#select-service').eq(0).attr('value'));
+                $dialog.find('#select-service').eq(0).attr('value'));
 
         // Fill the providers listbox with providers that can serve the appointment's
         // service and then select the user's provider.
@@ -359,7 +359,7 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
 
             if (canProvideService) { // Add the provider to the listbox.
                 var option = new Option(provider.first_name
-                    + ' ' + provider.last_name, provider.id);
+                        + ' ' + provider.last_name, provider.id);
                 $dialog.find('#select-provider').append(option);
             }
         });
@@ -488,9 +488,9 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
 
             // Check email address.
             /*if (!GeneralFunctions.validateEmail($dialog.find('#email').val())) {
-                $dialog.find('#email').closest('.form-group').addClass('has-error');
-                throw EALang.invalid_email;
-            }*/
+             $dialog.find('#email').closest('.form-group').addClass('has-error');
+             throw EALang.invalid_email;
+             }*/
 
             // Check appointment start and end time.
             var start = $('#start-datetime').datetimepicker('getDate');
@@ -511,4 +511,4 @@ window.BackendCalendarAppointmentsModal = window.BackendCalendarAppointmentsModa
         _bindEventHandlers();
     };
 
-})(window.BackendCalendarAppointmentsModal); 
+})(window.BackendCalendarAppointmentsModal);

@@ -770,6 +770,13 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
      * @param {Date} endDate Visible end date of the calendar.
      */
     function _refreshCalendarAppointments($calendar, recordId, filterType, startDate, endDate) {
+
+        var selectFilterAC = $('#select-filter-ac');
+        if (selectFilterAC) {
+            recordId = selectFilterAC.val();
+            filterType = FILTER_TYPE_AC;
+        }
+
         var url = GlobalVariables.baseUrl + '/index.php/backend_api/ajax_get_calendar_appointments';
         var data = {
             csrfToken: GlobalVariables.csrfToken,
@@ -818,14 +825,41 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
 
             // :: ADD PROVIDER'S UNAVAILABLE TIME PERIODS
             var calendarView = $calendar.fullCalendar('getView').name;
-            
-            if (response.available_providers) {
-                GlobalVariables.availableProviders = response.available_providers;
-            }
+
             if (response.available_services) {
                 GlobalVariables.availableServices = response.available_services;
+                var optgroupHtml = '';
+                $.each(GlobalVariables.availableServices, function (index, service) {
+                    optgroupHtml += '<option value="' + service.id + '" type="' + FILTER_TYPE_SERVICE + '">' +
+                            service.name + '</option>';
+                });
+                $('#select-service').html(optgroupHtml);
             }
-            
+
+            if (response.available_providers) {
+                GlobalVariables.availableProviders = response.available_providers;
+                var optgroupHtml = '';
+                $.each(GlobalVariables.availableProviders, function (index, provider) {
+                    optgroupHtml +=
+                            '<option value="' + provider.id + '" type="' + FILTER_TYPE_PROVIDER + '" '
+                            + provider.first_name + ' ' + provider.last_name
+                            + '</option>';
+                });
+                $('#select-provider').append(optgroupHtml);
+            }
+
+            if (response.customers) {
+                GlobalVariables.customers = response.customers;
+                var list = $('#existing-customers-list');
+
+                $('#filter-existing-customers').val('');
+                list.html('');
+
+                $.each(GlobalVariables.customers, function (index, c) {
+                    list.append('<div data-id="' + c.id + '">' + c.first_name + ' ' + c.last_name + '</div>');
+                });
+            }
+
             if ((filterType === FILTER_TYPE_PROVIDER || filterType === FILTER_TYPE_AC) && calendarView !== 'month') {
                 $.each(GlobalVariables.availableProviders, function (index, provider) {
                     if ((provider.id == recordId && filterType === FILTER_TYPE_PROVIDER) || (provider.id == GlobalVariables.user.id && filterType === FILTER_TYPE_AC)) {
@@ -1074,7 +1108,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                     }
                 });
             }
-            
+
         }, 'json').fail(GeneralFunctions.ajaxFailureHandler);
     }
 
@@ -1208,7 +1242,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
             eventDrop: _calendarEventDrop,
             eventAfterAllRender: _convertTitlesToHtml
         });
-        
+
         // Trigger once to set the proper footer position after calendar initialization.
         _calendarWindowResize();
 

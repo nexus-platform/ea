@@ -223,20 +223,21 @@ class Backend_api extends CI_Controller {
                 $response['available_providers'] = $this->providers_model->get_available_providers();
                 $response['available_services'] = $this->services_model->get_available_services();
                 $response['unavailables'] = $this->appointments_model->get_batch($where_clause);
-            }
-            
-            else if ($this->input->post('filter_type') == FILTER_TYPE_AC) {
+            } else if ($this->input->post('filter_type') == FILTER_TYPE_AC) {
                 $where_clause = 'id_users_provider = ' . $this->session->userdata['user_id'] . '
                 AND ((start_datetime > ' . $start_date . ' AND start_datetime < ' . $end_date . ') 
                 or (end_datetime > ' . $start_date . ' AND end_datetime < ' . $end_date . ') 
                 or (start_datetime <= ' . $start_date . ' AND end_datetime >= ' . $end_date . ')) 
-                AND is_unavailable = 0';
-                
-                $response['available_providers'] = $this->providers_model->get_available_providers(str_replace("'", "", $record_id));
-                
-                if ($record_id !== "'0'") {
-                    $response['available_services'] = $this->services_model->get_available_services(str_replace("'", "", $record_id));
-                    $where_clause .= ' AND id_services in (SELECT id FROM ea_services where id_assessment_center = ' . $record_id . ')';
+                AND is_unavailable = 1';
+
+                $ac_id = str_replace("'", "", $record_id);
+
+                $response['available_providers'] = $this->providers_model->get_available_providers($ac_id);
+
+                if ($ac_id !== "0") {
+                    $response['customers'] = $this->customers_model->get_batch("id_assessment_center = $ac_id");
+                    $response['available_services'] = $this->services_model->get_available_services($ac_id);
+                    //$where_clause .= ' AND id_services in (SELECT id FROM ea_services where id_assessment_center = ' . $record_id . ')';
                 } else {
                     $response['available_services'] = [];
                 }
@@ -269,17 +270,19 @@ class Backend_api extends CI_Controller {
             $this->load->model('customers_model');
             $this->load->model('settings_model');
 
+            $customer = json_decode($this->input->post('customer_data'), TRUE);
+
             // :: SAVE CUSTOMER CHANGES TO DATABASE
-            if ($this->input->post('customer_data')) {
-                $customer = json_decode($this->input->post('customer_data'), TRUE);
+            /* if ($this->input->post('customer_data')) {
+              $customer = json_decode($this->input->post('customer_data'), TRUE);
 
-                $REQUIRED_PRIV = (!isset($customer['id'])) ? $this->privileges[PRIV_CUSTOMERS]['add'] : $this->privileges[PRIV_CUSTOMERS]['edit'];
-                if ($REQUIRED_PRIV == FALSE) {
-                    throw new Exception('You do not have the required privileges for this task.');
-                }
+              $REQUIRED_PRIV = (!isset($customer['id'])) ? $this->privileges[PRIV_CUSTOMERS]['add'] : $this->privileges[PRIV_CUSTOMERS]['edit'];
+              if ($REQUIRED_PRIV == FALSE) {
+              throw new Exception('You do not have the required privileges for this task.');
+              }
 
-                //$customer['id'] = $this->customers_model->add($customer);
-            }
+              //$customer['id'] = $this->customers_model->add($customer);
+              } */
 
             // :: SAVE APPOINTMENT CHANGES TO DATABASE
             if ($this->input->post('appointment_data')) {
