@@ -558,9 +558,9 @@ class Backend_api extends CI_Controller {
      */
     public function ajax_filter_customers() {
         try {
-            if ($this->privileges[PRIV_CUSTOMERS]['view'] == FALSE) {
+            /*if ($this->privileges[PRIV_CUSTOMERS]['view'] == FALSE) {
                 throw new Exception('You do not have the required privileges for this task.');
-            }
+            }*/
 
             $this->load->model('appointments_model');
             $this->load->model('services_model');

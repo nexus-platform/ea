@@ -42,7 +42,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
          */
         $('#reload-appointments').click(function () {
             var selectFilterAC = $('#select-filter-ac');
-            if (selectFilterAC) {
+            if (selectFilterAC.length) {
                 selectFilterAC.trigger('change');
             } else {
                 $('#select-filter-item').trigger('change');
@@ -772,7 +772,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
     function _refreshCalendarAppointments($calendar, recordId, filterType, startDate, endDate) {
 
         var selectFilterAC = $('#select-filter-ac');
-        if (selectFilterAC) {
+        if (selectFilterAC.length) {
             recordId = selectFilterAC.val();
             filterType = FILTER_TYPE_AC;
         }
