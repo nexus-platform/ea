@@ -32,7 +32,7 @@
 
     <!-- PAGE NAVIGATION -->
 
-    <ul class="nav nav-tabs" role="tablist">
+    <ul class="nav nav-tabs" role="tablist" style="margin-top: 15px;">
         <li role="presentation" class="active"><a href="#providers" aria-controls="providers" role="tab" data-toggle="tab">My personal information</a></li>
     </ul>
 

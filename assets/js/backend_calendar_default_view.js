@@ -1172,7 +1172,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
             selectable: true,
             selectHelper: true,
             select: function (start, end, jsEvent, view) {
-                if (!start.hasTime() || !end.hasTime()) {
+                /*if (!start.hasTime() || !end.hasTime()) {
                     return;
                 }
 
@@ -1202,7 +1202,7 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
                 $('#start-datetime').datepicker('setDate', new Date(start.format('YYYY-MM-DD HH:mm:ss')));
                 $('#end-datetime').datepicker('setDate', new Date(end.format('YYYY-MM-DD HH:mm:ss')));
 
-                return false;
+                return false;*/
             },
 
             // Translations

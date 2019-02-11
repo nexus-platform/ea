@@ -47,7 +47,7 @@ if ($user_status === '0') {
         <div class="col-xs-12">
             <h5 class="text-center">
                 <b>Your account has been disabled on this Centre.</b><br/>
-                Contact the <a href="mailto:<?= $admin ?>">administrator </a> if you believe this is an error.
+                Contact the <a href="mailto:<?= $admin ?>">administrator </a> if you thinks this is an error.
             </h5>
         </div>
     </div>
@@ -55,25 +55,25 @@ if ($user_status === '0') {
 } else {
     ?>
 
-    <div id="calendar-page" class="container-fluid">
+    <div id="calendar-page" class="container-fluid" style="margin-top: 15px;">
         <div id="calendar-toolbar">
             <div id="calendar-filter" class="form-inline col-xs-12 col-sm-5">
-                
+
                 <div class="form-group <?= $user_role === 'provider' ? 'hidden' : '' ?>">
                     <label for="select-filter-item">Calendar</label>
                     <select id="select-filter-item" class="form-control" title="<?= lang('select_filter_item_hint') ?>">
                     </select>
                 </div>
-                
+
                 <?php
                 if ($user_role === 'provider') {
                     ?>
-                <div class="form-group">
-                    <label for="select-filter-ac">Centre</label>
-                    <select id="select-filter-ac" class="form-control" title="Select an Assessment Centre">
-                    </select>
-                </div>
-                <?php
+                    <div class="form-group">
+                        <label for="select-filter-ac">Centre</label>
+                        <select id="select-filter-ac" class="form-control" title="Select an Assessment Centre">
+                        </select>
+                    </div>
+                    <?php
                 }
                 ?>
             </div>
