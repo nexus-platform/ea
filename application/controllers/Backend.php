@@ -131,6 +131,25 @@ class Backend extends CI_Controller {
      */
     public function customers() {
         $this->session->set_userdata('dest_url', site_url('backend/customers'));
+        $this->load->model('user_model');
+        $this->load->model('companies_model');
+        $this->load->library('session');
+        $jwt = $this->input->get('jwt');
+        $payload = jwt_helper::decode($jwt);
+        
+        if ($payload) {
+            $this->session->set_userdata('ac', $this->companies_model->find($this->input->get('ac')));
+            $user = $this->user_model->get_settings($payload->user_id);
+            if ($user) {
+                $this->load->model('roles_model');
+                $this->session->set_userdata('user_id', $user['id']);
+                $this->session->set_userdata('user_status', $user['status']);
+                $this->session->set_userdata('user_email', $user['email']);
+                $this->session->set_userdata('role_slug', $this->roles_model->get_role_slug($user['id_roles']));
+                $this->session->set_userdata('username', $user['email']);
+                $this->session->set_userdata('fullname', $user['first_name'] . ' ' . $user['last_name']);
+            }
+        }
 
         if (!$this->session->userdata['user_id'] || !$this->_has_privileges(PRIV_CUSTOMERS)) {
             return;
@@ -180,6 +199,26 @@ class Backend extends CI_Controller {
     public function services() {
         $this->session->set_userdata('dest_url', site_url('backend/services'));
 
+        $this->load->model('user_model');
+        $this->load->model('companies_model');
+        $this->load->library('session');
+        $jwt = $this->input->get('jwt');
+        $payload = jwt_helper::decode($jwt);
+        
+        if ($payload) {
+            $this->session->set_userdata('ac', $this->companies_model->find($this->input->get('ac')));
+            $user = $this->user_model->get_settings($payload->user_id);
+            if ($user) {
+                $this->load->model('roles_model');
+                $this->session->set_userdata('user_id', $user['id']);
+                $this->session->set_userdata('user_status', $user['status']);
+                $this->session->set_userdata('user_email', $user['email']);
+                $this->session->set_userdata('role_slug', $this->roles_model->get_role_slug($user['id_roles']));
+                $this->session->set_userdata('username', $user['email']);
+                $this->session->set_userdata('fullname', $user['first_name'] . ' ' . $user['last_name']);
+            }
+        }
+        
         if (!$this->session->userdata['user_id'] || !$this->_has_privileges(PRIV_SERVICES)) {
             return;
         }
@@ -215,6 +254,26 @@ class Backend extends CI_Controller {
     public function users() {
         $this->session->set_userdata('dest_url', site_url('backend/users'));
 
+        $this->load->model('user_model');
+        $this->load->model('companies_model');
+        $this->load->library('session');
+        $jwt = $this->input->get('jwt');
+        $payload = jwt_helper::decode($jwt);
+        
+        if ($payload) {
+            $this->session->set_userdata('ac', $this->companies_model->find($this->input->get('ac')));
+            $user = $this->user_model->get_settings($payload->user_id);
+            if ($user) {
+                $this->load->model('roles_model');
+                $this->session->set_userdata('user_id', $user['id']);
+                $this->session->set_userdata('user_status', $user['status']);
+                $this->session->set_userdata('user_email', $user['email']);
+                $this->session->set_userdata('role_slug', $this->roles_model->get_role_slug($user['id_roles']));
+                $this->session->set_userdata('username', $user['email']);
+                $this->session->set_userdata('fullname', $user['first_name'] . ' ' . $user['last_name']);
+            }
+        }
+        
         if (!$this->session->userdata['user_id'] || !$this->_has_privileges(PRIV_USERS)) {
             return;
         }
@@ -309,6 +368,26 @@ class Backend extends CI_Controller {
     public function settings() {
         $this->session->set_userdata('dest_url', site_url('backend/settings'));
 
+        $this->load->model('user_model');
+        $this->load->model('companies_model');
+        $this->load->library('session');
+        $jwt = $this->input->get('jwt');
+        $payload = jwt_helper::decode($jwt);
+        
+        if ($payload) {
+            $this->session->set_userdata('ac', $this->companies_model->find($this->input->get('ac')));
+            $user = $this->user_model->get_settings($payload->user_id);
+            if ($user) {
+                $this->load->model('roles_model');
+                $this->session->set_userdata('user_id', $user['id']);
+                $this->session->set_userdata('user_status', $user['status']);
+                $this->session->set_userdata('user_email', $user['email']);
+                $this->session->set_userdata('role_slug', $this->roles_model->get_role_slug($user['id_roles']));
+                $this->session->set_userdata('username', $user['email']);
+                $this->session->set_userdata('fullname', $user['first_name'] . ' ' . $user['last_name']);
+            }
+        }
+        
         if (!$this->session->userdata['user_id'] || !$this->_has_privileges(PRIV_SYSTEM_SETTINGS, FALSE) && !$this->_has_privileges(PRIV_USER_SETTINGS)) {
             return;
         }
