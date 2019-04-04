@@ -39,7 +39,7 @@
                 <?php
                 if ($user_status === '0') {
                 ?>
-                <div class="row" style="margin-top: 50px;">
+                <div class="row">
                     <div class="col-xs-12">
                         <h5 class="text-center">
                             <b>Your account has been disabled on this Centre.</b><br/>

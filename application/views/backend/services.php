@@ -23,7 +23,7 @@
     });
 </script>
 
-<div id="services-page" class="container-fluid backend-page">
+<div id="services-page" class="container-fluid backend-page" style="margin: 15px 0;">
     <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active"><a href="#services" aria-controls="services" role="tab" data-toggle="tab"><?= lang('services') ?></a></li>
         <li role="presentation"><a href="#categories" aria-controls="categories" role="tab" data-toggle="tab"><?= lang('categories') ?></a></li>

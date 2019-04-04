@@ -26,7 +26,7 @@
 </script>
 
 <div id="customers-page" class="container-fluid backend-page">
-    <div class="row">
+    <div class="row" style="margin: 30px 0;">
         <div id="filter-customers" class="filter-records column col-xs-12 col-sm-5">
             <form>
                 <div class="input-group">
@@ -45,7 +45,7 @@
                 </div>
             </form>
 
-            <h3><?= lang('customers') ?></h3>
+            <h3>Students</h3>
             <div class="results"></div>
         </div>
 

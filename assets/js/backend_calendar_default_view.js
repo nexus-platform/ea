@@ -891,9 +891,9 @@ window.BackendCalendarDefaultView = window.BackendCalendarDefaultView || {};
 
                                     $calendar.fullCalendar('renderEvent', unavailablePeriod, false);
                                 });
-
+                                
                                 // Non-working day.
-                                if (workingPlan[selectedDayName] == null) {
+                                if (!workingPlan || workingPlan[selectedDayName] == null) {
                                     unavailablePeriod = {
                                         title: EALang.not_working,
                                         start: $calendar.fullCalendar('getView').intervalStart.clone(),

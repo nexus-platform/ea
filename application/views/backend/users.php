@@ -30,7 +30,7 @@
     });
 </script>
 
-<div id="users-page" class="container-fluid backend-page">
+<div id="users-page" class="container-fluid backend-page" style="margin: 15px 0;">
 
     <!-- PAGE NAVIGATION -->
 
