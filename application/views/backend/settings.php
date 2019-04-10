@@ -109,7 +109,7 @@
                                     <option value="1">Enabled</option>
                                 </select>
                                 <span class="help-block">
-                                    If enabled, students will be available to use the booking interface right after submitting the Assessment Form.
+                                    If enabled, students will be able to use the booking interface right after submitting the Assessment Form.
                                 </span>
                             </div>
                         </div>
